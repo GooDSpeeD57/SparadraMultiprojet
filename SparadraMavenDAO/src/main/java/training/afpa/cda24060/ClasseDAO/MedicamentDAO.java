@@ -74,7 +74,7 @@ public class MedicamentDAO extends AbstractDAO<Medicament> {
 
     public int countMedicaments() {
         String sql = "SELECT COUNT(*) AS total FROM medicament";
-        try (Connection conn = DCSingletonHikaricp.getInstanceDB();
+        try (Connection conn = DCSingletonHikaricp.getConnection();
              PreparedStatement pst = conn.prepareStatement(sql);
              ResultSet rs = pst.executeQuery()) {
             if (rs.next()) {

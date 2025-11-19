@@ -58,7 +58,7 @@ public class PrescriptionDAO extends AbstractDAO<Prescription> {
     public java.util.List<Prescription> findByOrdonnance(int idOrdonnance) {
         java.util.List<Prescription> list = new java.util.ArrayList<>();
         String sql = "SELECT * FROM Prescription WHERE idOrdonnance=?";
-        try (Connection conn = training.afpa.cda24060.Connection.DCSingletonHikaricp.getInstanceDB();
+        try (Connection conn = training.afpa.cda24060.Connection.DCSingletonHikaricp.getConnection();
              PreparedStatement pst = conn.prepareStatement(sql)) {
 
             pst.setInt(1, idOrdonnance);

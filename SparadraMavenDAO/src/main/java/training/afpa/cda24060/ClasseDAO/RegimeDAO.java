@@ -1,5 +1,6 @@
 package training.afpa.cda24060.ClasseDAO;
 
+import training.afpa.cda24060.Connection.DCSingletonHikaricp;
 import training.afpa.cda24060.modele.Regime;
 
 import java.sql.Connection;
@@ -21,7 +22,7 @@ public class RegimeDAO extends AbstractDAO<Regime> {
     @Override
     protected Regime map(ResultSet rs) throws Exception {
         Regime r = new Regime();
-        r.setIdRegime(rs.getInt("idRegime"));
+        r.setIdRegime(rs.getInt("id_Regime"));
         r.setNomRegime(rs.getString("nomRegime"));
         r.setTauxRemboursement(rs.getDouble("tauxRemboursement"));
         return r;
@@ -44,5 +45,21 @@ public class RegimeDAO extends AbstractDAO<Regime> {
         pst.setDouble(2, r.getTauxRemboursement());
         pst.setInt(3, r.getIdRegime());
         return pst;
+    }
+
+    public Regime findById(int idRegime) {
+        String sql = "SELECT * FROM regime WHERE idRegime=?";
+        try (Connection conn = DCSingletonHikaricp.getConnection();
+             PreparedStatement pst = conn.prepareStatement(sql)) {
+
+            pst.setInt(1, idRegime);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                return map(rs);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

@@ -3,21 +3,25 @@ package training.afpa.cda24060.modele;
 import training.afpa.cda24060.exception.SaisieException;
 import training.afpa.cda24060.utilitaires.RegexValidator;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 public class Client extends Personne {
 
     private int idClient;
     private String nss;
-    private String dateNaissance;
+    private LocalDate dateNaissance;  // 🔹 Changement ici
     private Regime regime;
     private Medecin medecin;
     private Mutuelle mutuelle;
     private String idTitulaireMutuelle;
 
+    private static final DateTimeFormatter FORMAT_DATE = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public Client() {
         super();
     }
-
 
     public Client(String nom, String prenom, String adresse, String codePostal, String ville,
                   String telephone, String email, String nss, String dateNaissance,
@@ -25,7 +29,7 @@ public class Client extends Personne {
                   String idTitulaireMutuelle) throws SaisieException {
         super(nom, prenom, adresse, codePostal, ville, telephone, email);
         this.setNss(nss);
-        this.setDateNaissance(dateNaissance);
+        this.setDateNaissance(dateNaissance);  // Utilisation du setter
         this.setRegime(regime);
         this.setMedecin(medecin);
         this.setMutuelle(mutuelle);
@@ -51,7 +55,7 @@ public class Client extends Personne {
         this.nss = nss;
     }
 
-    public String getDateNaissance() {
+    public LocalDate getDateNaissance() {
         return dateNaissance;
     }
 
@@ -59,7 +63,11 @@ public class Client extends Personne {
         if (!RegexValidator.validerDateNaissance(dateNaissance)) {
             throw new SaisieException("Format de date incorrect ! Format attendu : Jour/Mois/Année.");
         }
-        this.dateNaissance = dateNaissance;
+        try {
+            this.dateNaissance = LocalDate.parse(dateNaissance, FORMAT_DATE);
+        } catch (DateTimeParseException e) {
+            throw new SaisieException("Impossible de parser la date de naissance.");
+        }
     }
 
     public Regime getRegime() {
@@ -99,7 +107,7 @@ public class Client extends Personne {
         return super.toString()
                 + "\nID Client                  : " + idClient
                 + "\nNuméro de Sécurité Sociale : " + nss
-                + "\nDate de Naissance          : " + dateNaissance
+                + "\nDate de Naissance          : " + (dateNaissance != null ? dateNaissance.format(FORMAT_DATE) : "Non défini")
                 + "\nRégime                     : " + (regime != null ? regime.getNomRegime() : "Non défini")
                 + "\nMutuelle                   : " + (mutuelle != null ? mutuelle.getNom() : "Non défini")
                 + "\nMédecin Référent           : " + (medecin != null ? medecin.getNom() : "Non défini")

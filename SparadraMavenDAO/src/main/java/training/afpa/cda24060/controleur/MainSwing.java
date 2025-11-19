@@ -62,18 +62,9 @@ public class MainSwing extends JFrame {
         setSize(1200, 800);
         setLocationRelativeTo(null);
 
-
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                sauvegarderEtQuitter();
-            }
-        });
-
-
         creerMenu();
 
-        // Création des onglets
+
         tabbedPane = new JTabbedPane();
         tabbedPane.setFont(new Font("Arial", Font.BOLD, 12));
 
@@ -100,14 +91,11 @@ public class MainSwing extends JFrame {
         JMenuBar menuBar = new JMenuBar();
 
         JMenu menuFichier = new JMenu("Fichier");
-        JMenuItem itemSauvegarder = new JMenuItem("Sauvegarder");
         JMenuItem itemQuitter = new JMenuItem("Quitter");
 
-        itemSauvegarder.addActionListener(e -> sauvegarder());
-        itemQuitter.addActionListener(e -> sauvegarderEtQuitter());
+        // Action pour quitter directement
+        itemQuitter.addActionListener(e -> System.exit(0));
 
-        menuFichier.add(itemSauvegarder);
-        menuFichier.addSeparator();
         menuFichier.add(itemQuitter);
 
         JMenu menuAide = new JMenu("Aide");
@@ -119,478 +107,13 @@ public class MainSwing extends JFrame {
                         JOptionPane.INFORMATION_MESSAGE)
         );
         menuAide.add(itemAPropos);
+
         menuBar.add(menuFichier);
         menuBar.add(menuAide);
         setJMenuBar(menuBar);
     }
-    private void creerPanelAccueil() {
-        ImageIcon backgroundIcon = new ImageIcon(
-                getClass().getResource("/test.png")
-        );
-        Image backgroundImage = backgroundIcon.getImage();
 
-        panelAccueil = new JPanel(new BorderLayout()) {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                // Dessiner l'image pour couvrir tout le panneau
-                g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
-            }
-        };
-        panelAccueil.setOpaque(false);
 
-        JPanel panelBienvenue = new JPanel();
-        panelBienvenue.setOpaque(false);
-        panelBienvenue.setLayout(new BoxLayout(panelBienvenue, BoxLayout.Y_AXIS));
-
-        JLabel lblTitre = new JLabel("Bienvenue dans le Système de Pharmacie");
-        lblTitre.setFont(new Font("Arial", Font.BOLD, 24));
-        lblTitre.setAlignmentX(Component.CENTER_ALIGNMENT);
-        lblTitre.setForeground(new Color(34, 89, 7));
-
-        JLabel lblSousTitre = new JLabel("Gestion complète de votre Pharmacie");
-        lblSousTitre.setFont(new Font("Arial", Font.ITALIC, 16));
-        lblSousTitre.setAlignmentX(Component.CENTER_ALIGNMENT);
-        lblSousTitre.setForeground(new Color(99, 180, 70));
-
-        panelBienvenue.add(Box.createVerticalGlue());
-        panelBienvenue.add(lblTitre);
-        panelBienvenue.add(Box.createRigidArea(new Dimension(0, 10)));
-        panelBienvenue.add(lblSousTitre);
-        panelBienvenue.add(Box.createVerticalGlue());
-
-
-        JPanel panelStats = new JPanel(new GridLayout(2, 2, 10, 10));
-        panelStats.setOpaque(false);
-        panelStats.setBorder(new TitledBorder("Statistiques"));
-
-
-        JLabel lblNbClient = new JLabel("Clients : " + new ClientDAO().countClients(), SwingConstants.CENTER);
-        JLabel lblNbMedicament = new JLabel("Médicaments : " + new MedicamentDAO().countMedicaments(), SwingConstants.CENTER);
-        JLabel lblNbMedecin = new JLabel("Médecins : " + new MedecinDAO().countMedecins(), SwingConstants.CENTER);
-        JLabel lblNbMutuelle = new JLabel("Mutuelles : " + new MutuelleDAO().countMutuelles(), SwingConstants.CENTER);
-
-
-        Font fontStats = new Font("Arial", Font.BOLD, 14);
-        lblNbClient.setFont(fontStats);
-        lblNbMedicament.setFont(fontStats);
-        lblNbMedecin.setFont(fontStats);
-        lblNbMutuelle.setFont(fontStats);
-
-        lblNbClient.setForeground(Color.BLACK);
-        lblNbMedicament.setForeground(Color.BLACK);
-        lblNbMedecin.setForeground(Color.BLACK);
-        lblNbMutuelle.setForeground(Color.BLACK);
-
-        panelStats.add(lblNbClient);
-        panelStats.add(lblNbMedicament);
-        panelStats.add(lblNbMedecin);
-        panelStats.add(lblNbMutuelle);
-
-        panelAccueil.add(panelBienvenue, BorderLayout.CENTER);
-        panelAccueil.add(panelStats, BorderLayout.SOUTH);
-    }
-
-    private void creerPanelClient() {
-        panelClient = new JPanel(new BorderLayout());
-
-        // Panel de saisie
-        JPanel panelSaisieClient = new JPanel(new GridBagLayout());
-        panelSaisieClient.setBorder(new TitledBorder("Nouveau Client"));
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
-
-        // Champs de saisie
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.EAST;
-        panelSaisieClient.add(new JLabel("Nom :"), gbc);
-        gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        txtNomClient = new JTextField(15);
-        panelSaisieClient.add(txtNomClient, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.fill = GridBagConstraints.NONE;
-        panelSaisieClient.add(new JLabel("Prénom :"), gbc);
-        gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        txtPrenomClient = new JTextField(15);
-        panelSaisieClient.add(txtPrenomClient, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 2; gbc.fill = GridBagConstraints.NONE;
-        panelSaisieClient.add(new JLabel("Adresse :"), gbc);
-        gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        txtAdresseClient = new JTextField(15);
-        panelSaisieClient.add(txtAdresseClient, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.anchor = GridBagConstraints.EAST;
-        panelSaisieClient.add(new JLabel("Code Postal :"), gbc);
-        gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        txtCodePostalClient = new JTextField(15);
-        panelSaisieClient.add(txtCodePostalClient, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        gbc.fill = GridBagConstraints.NONE;
-        panelSaisieClient.add(new JLabel("Ville :"), gbc);
-        gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        txtVilleClient = new JTextField(15);
-        panelSaisieClient.add(txtVilleClient, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 5;
-        gbc.anchor = GridBagConstraints.EAST;
-        panelSaisieClient.add(new JLabel("Téléphone :"), gbc);
-        gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        txtTelephoneClient = new JTextField(15);
-        panelSaisieClient.add(txtTelephoneClient, gbc);
-
-        gbc.gridx = 2;
-        gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        panelSaisieClient.add(new JLabel("Email :"), gbc);
-        gbc.gridx = 3;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        txtEmailClient = new JTextField(15);
-        panelSaisieClient.add(txtEmailClient, gbc);
-
-        gbc.gridx = 2;
-        gbc.gridy = 1;
-        gbc.fill = GridBagConstraints.NONE;
-        panelSaisieClient.add(new JLabel("N° Séc. Sociale :"), gbc);
-        gbc.gridx = 3;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        txtNssClient = new JTextField(15);
-        panelSaisieClient.add(txtNssClient, gbc);
-
-        gbc.gridx = 2;
-        gbc.gridy = 2;
-        gbc.anchor = GridBagConstraints.EAST;
-        panelSaisieClient.add(new JLabel("Date de Naissance :"), gbc);
-        gbc.gridx = 3;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        txtDateNaissanceClient = new JTextField(15);
-        panelSaisieClient.add(txtDateNaissanceClient, gbc);
-
-        gbc.gridx = 2;
-        gbc.gridy = 3;
-        gbc.fill = GridBagConstraints.NONE;
-        panelSaisieClient.add(new JLabel("Mutuelle :"), gbc);
-        gbc.gridx = 3;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        txtMutuelleClient = new JTextField(15);
-        panelSaisieClient.add(txtMutuelleClient, gbc);
-
-        gbc.gridx = 2;
-        gbc.gridy = 4; gbc.fill = GridBagConstraints.NONE;
-        panelSaisieClient.add(new JLabel("Médecin Référent :"), gbc);
-        gbc.gridx = 3;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        txtMedecinrefClient = new JTextField(15);
-        panelSaisieClient.add(txtMedecinrefClient, gbc);
-
-        // Boutons
-        JPanel panelBoutons = new JPanel(new FlowLayout());
-        JButton btnAjouter = new JButton("Ajouter");
-        JButton btnModifier = new JButton("Modifier");
-        JButton btnSupprimer = new JButton("Supprimer");
-        JButton btnVider = new JButton("Vider");
-
-        btnAjouter.addActionListener(e -> ajouterClient());
-        btnModifier.addActionListener(e-> modifierClient());
-        btnSupprimer.addActionListener(e->supprimerClient());
-        btnVider.addActionListener(e -> viderChampsClient());
-
-        panelBoutons.add(btnAjouter);
-        panelBoutons.add(btnModifier);
-        panelBoutons.add(btnSupprimer);
-        panelBoutons.add(btnVider);
-
-        gbc.gridx = 0;
-        gbc.gridy = 6;
-        gbc.gridwidth = 4;
-        panelSaisieClient.add(panelBoutons, gbc);
-
-        // Panel de recherche
-        JPanel panelRechercheClient = new JPanel(new GridBagLayout());
-        panelRechercheClient.setBorder(new TitledBorder("Recherche"));
-
-        gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        panelRechercheClient.add(new JLabel("Par nom:"), gbc);
-        gbc.gridx = 1;
-        txtRechercheNom = new JTextField(15);
-        panelRechercheClient.add(txtRechercheNom, gbc);
-        gbc.gridx = 2;
-        JButton btnRechercheNom = new JButton("🔍");
-        btnRechercheNom.addActionListener(e -> rechercherClientParNom());
-        panelRechercheClient.add(btnRechercheNom, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        panelRechercheClient.add(new JLabel("Par email:"), gbc);
-        gbc.gridx = 1;
-        txtRechercheEmail = new JTextField(15);
-        panelRechercheClient.add(txtRechercheEmail, gbc);
-        gbc.gridx = 2;
-        JButton btnRechercheEmail = new JButton("🔍");
-        btnRechercheEmail.addActionListener(e -> rechercherClientParEmail());
-        panelRechercheClient.add(btnRechercheEmail, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        panelRechercheClient.add(new JLabel("Par NSS:"), gbc);
-        gbc.gridx = 1;
-        txtRechercheNss = new JTextField(15);
-        panelRechercheClient.add(txtRechercheNss, gbc);
-        gbc.gridx = 2;
-        JButton btnRechercheNss = new JButton("🔍");
-        btnRechercheNss.addActionListener(e -> rechercherClientParNss());
-        panelRechercheClient.add(btnRechercheNss, gbc);
-
-        JButton btnAfficherTous = new JButton("Afficher tous");
-        btnAfficherTous.addActionListener(e -> chargerClient());
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.gridwidth = 3;
-        panelRechercheClient.add(btnAfficherTous, gbc);
-
-        // Panel supérieur
-        JPanel panelSuperior = new JPanel(new GridLayout(1, 2));
-        panelSuperior.add(panelSaisieClient);
-        panelSuperior.add(panelRechercheClient);
-
-        // Table des clients
-        String[] colonnesClient = {"Nom", "Prénom", "Adresse","Code Postal","Ville","Téléphone","Email",
-                "N° Séc. Sociale","Date Naissance","Mutuelle","Médecin Réf"};
-        modelClient = new DefaultTableModel(colonnesClient, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-        tableClient = new JTable(modelClient);
-        tableClient.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        tableClient.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    int row = tableClient.getSelectedRow();
-                    if (row != -1) {
-                        Client c = Client.getClients().get(row);
-                        txtNomClient.setText(c.getNom());
-                        txtPrenomClient.setText(c.getPrenom());
-                        txtAdresseClient.setText(c.getAdresse());
-                        txtCodePostalClient.setText(c.getCodePostal());
-                        txtVilleClient.setText(c.getVille());
-                        txtTelephoneClient.setText(c.getTelephone());
-                        txtEmailClient.setText(c.getEmail());
-                        txtNssClient.setText(c.getNss());
-                        txtDateNaissanceClient.setText(c.getDateNaissance());
-                        txtMutuelleClient.setText(c.getMutuelle());
-                        txtMedecinrefClient.setText(c.getMedecinRef());
-                    }
-                }
-            }
-        });
-        JScrollPane scrollClient = new JScrollPane(tableClient);
-        scrollClient.setBorder(new TitledBorder("Liste des Clients"));
-
-        panelClient.add(panelSuperior, BorderLayout.NORTH);
-        panelClient.add(scrollClient, BorderLayout.CENTER);
-    }
-
-    private void creerPanelMedecin() {
-        panelMedecin = new JPanel(new BorderLayout());
-
-        // Panel de saisie
-        JPanel panelSaisieMedecin = new JPanel(new GridBagLayout());
-        panelSaisieMedecin.setBorder(new TitledBorder("Nouveau Médecin"));
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
-
-        // Champs de saisie
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.EAST;
-        panelSaisieMedecin.add(new JLabel("Nom :"), gbc);
-        gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        txtNomMedecin = new JTextField(15);
-        panelSaisieMedecin.add(txtNomMedecin, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.fill = GridBagConstraints.NONE;
-        panelSaisieMedecin.add(new JLabel("Prénom :"), gbc);
-        gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        txtPrenomMedecin = new JTextField(15);
-        panelSaisieMedecin.add(txtPrenomMedecin, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.fill = GridBagConstraints.NONE;
-        panelSaisieMedecin.add(new JLabel("Adresse :"), gbc);
-        gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        txtAdresseMedecin = new JTextField(15);
-        panelSaisieMedecin.add(txtAdresseMedecin, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.anchor = GridBagConstraints.EAST;
-        panelSaisieMedecin.add(new JLabel("Code Postal :"), gbc);
-        gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        txtCodePostalMedecin = new JTextField(15);
-        panelSaisieMedecin.add(txtCodePostalMedecin, gbc);
-
-        gbc.gridx = 2;
-        gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        panelSaisieMedecin.add(new JLabel("Ville :"), gbc);
-        gbc.gridx = 3;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        txtVilleMedecin = new JTextField(15);
-        panelSaisieMedecin.add(txtVilleMedecin, gbc);
-
-        gbc.gridx = 2;
-        gbc.gridy = 1;
-        gbc.anchor = GridBagConstraints.EAST;
-        panelSaisieMedecin.add(new JLabel("Téléphone :"), gbc);
-        gbc.gridx = 3;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        txtTelephoneMedecin = new JTextField(15);
-        panelSaisieMedecin.add(txtTelephoneMedecin, gbc);
-
-        gbc.gridx = 2;
-        gbc.gridy = 2;
-        gbc.fill = GridBagConstraints.NONE;
-        panelSaisieMedecin.add(new JLabel("Email :"), gbc);
-        gbc.gridx = 3;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        txtEmailMedecin = new JTextField(15);
-        panelSaisieMedecin.add(txtEmailMedecin, gbc);
-
-        gbc.gridx = 2;
-        gbc.gridy = 3;
-        gbc.fill = GridBagConstraints.NONE;
-        panelSaisieMedecin.add(new JLabel("N° RPPS :"), gbc);
-        gbc.gridx = 3;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        txtRPPSMedecin = new JTextField(15);
-        panelSaisieMedecin.add(txtRPPSMedecin, gbc);
-
-        JPanel panelBoutonsMedecin = new JPanel(new FlowLayout());
-
-        JButton btnAjouterMedecin = new JButton("Ajouter");
-        JButton btnModifierMedecin = new JButton("Modifier");
-        JButton btnSupprimerMedecin = new JButton("Supprimer");
-        JButton btnViderMedecin = new JButton("Vider");
-
-        btnAjouterMedecin.addActionListener(e -> ajouterMedecin());
-        btnModifierMedecin.addActionListener(e -> modifierMedecin());
-        btnSupprimerMedecin.addActionListener(e -> supprimerMedecin());
-        btnViderMedecin.addActionListener(e -> viderChampsMedecin());
-
-        panelBoutonsMedecin.add(btnAjouterMedecin);
-        panelBoutonsMedecin.add(btnModifierMedecin);
-        panelBoutonsMedecin.add(btnSupprimerMedecin);
-        panelBoutonsMedecin.add(btnViderMedecin);
-
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        gbc.gridwidth = 4;
-        panelSaisieMedecin.add(panelBoutonsMedecin, gbc);
-
-        // Panel de recherche
-        JPanel panelRechercheMedecin = new JPanel(new GridBagLayout());
-        panelRechercheMedecin.setBorder(new TitledBorder("Recherche"));
-
-        gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        panelRechercheMedecin.add(new JLabel("Par nom:"), gbc);
-        gbc.gridx = 1;
-        JTextField txtRechercheNomMedecin = new JTextField(15);
-        panelRechercheMedecin.add(txtRechercheNomMedecin, gbc);
-        gbc.gridx = 2;
-        JButton btnRechercheNomMedecin = new JButton("🔍");
-        btnRechercheNomMedecin.addActionListener(e -> rechercherMedecinParNom(txtRechercheNomMedecin.getText()));
-        panelRechercheMedecin.add(btnRechercheNomMedecin, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        panelRechercheMedecin.add(new JLabel("Par RPPS:"), gbc);
-        gbc.gridx = 1;
-        txtRechercheRpps = new JTextField(15);
-        panelRechercheMedecin.add(txtRechercheRpps, gbc);
-        gbc.gridx = 2;
-        JButton btnRechercheRpps = new JButton("🔍");
-        btnRechercheRpps.addActionListener(e -> rechercherMedecinParRpps());
-        panelRechercheMedecin.add(btnRechercheRpps, gbc);
-
-        JButton btnAfficherTousMedecins = new JButton("Afficher tous");
-        btnAfficherTousMedecins.addActionListener(e -> chargerMedecin());
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridwidth = 3;
-        panelRechercheMedecin.add(btnAfficherTousMedecins, gbc);
-
-        JPanel panelSuperiorMedecin = new JPanel(new GridLayout(1, 2));
-        panelSuperiorMedecin.add(panelSaisieMedecin);
-        panelSuperiorMedecin.add(panelRechercheMedecin);
-
-        // Table des Médecins
-        String[] colonnesMedecins = {"Nom", "Prénom", "Adresse", "Code Postal", "Ville", "Téléphone", "Email", "RPPS"};
-        modelMedecin = new DefaultTableModel(colonnesMedecins, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-
-        tableMedecin = new JTable(modelMedecin);
-        tableMedecin.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        tableMedecin.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    int row = tableMedecin.getSelectedRow();
-                    if (row != -1) {
-                        Medecin m = Medecin.getMedecins().get(row);
-                        txtNomMedecin.setText(m.getNom());
-                        txtPrenomMedecin.setText(m.getPrenom());
-                        txtAdresseMedecin.setText(m.getAdresse());
-                        txtCodePostalMedecin.setText(m.getCodePostal());
-                        txtVilleMedecin.setText(m.getVille());
-                        txtTelephoneMedecin.setText(m.getTelephone());
-                        txtEmailMedecin.setText(m.getEmail());
-                        txtRPPSMedecin.setText(m.getRPPS());
-                    }
-                }
-            }
-        });
-        JScrollPane scrollMedecin = new JScrollPane(tableMedecin);
-        scrollMedecin.setBorder(new TitledBorder("Liste des Médecins"));
-
-        panelMedecin.add(panelSuperiorMedecin, BorderLayout.NORTH);
-        panelMedecin.add(scrollMedecin, BorderLayout.CENTER);
-    }
 
         private void creerPanelMutuelle() {
             panelMutuelle = new JPanel(new BorderLayout());
@@ -1021,41 +544,6 @@ public class MainSwing extends JFrame {
         chargerFacturation();
     }
 
-    private void chargerClient() {
-        modelClient.setRowCount(0);
-        for (Client client : Client.getClients()) {
-            modelClient.addRow(new Object[]{
-                    client.getNom(),
-                    client.getPrenom(),
-                    client.getAdresse(),
-                    client.getCodePostal(),
-                    client.getVille(),
-                    client.getTelephone(),
-                    client.getEmail(),
-                    client.getNss(),
-                    client.getDateNaissance(),
-                    client.getMutuelle(),
-                    client.getMedecinRef()
-            });
-        }
-    }
-
-    private void chargerMedecin() {
-        modelMedecin.setRowCount(0);
-        for (Medecin medecin : Medecin.getMedecins()) {
-            modelMedecin.addRow(new Object[]{
-                    medecin.getNom(),
-                    medecin.getPrenom(),
-                    medecin.getAdresse(),
-                    medecin.getCodePostal(),
-                    medecin.getVille(),
-                    medecin.getTelephone(),
-                    medecin.getEmail(),
-                    medecin.getRPPS()
-            });
-        }
-    }
-
     private void chargerMutuelle() {
         modelMutuelle.setRowCount(0);
         for (Mutuelle mutuelle : Mutuelle.getMutuelles()) {
@@ -1103,40 +591,6 @@ public class MainSwing extends JFrame {
         // Cette méthode sera complétée avec la gestion de l'historique
         // Pour l'instant, on ajoute juste un placeholder
         modelFacturation.addRow(new Object[]{new java.util.Date(), "Application démarrée", "Système", "Chargement des données"});
-    }
-
-
-    private void ajouterClient() {
-        try {
-            String nom = txtNomClient.getText().trim();
-            String prenom = txtPrenomClient.getText().trim();
-            String adresse = txtAdresseClient.getText().trim();
-            String codePostal = txtCodePostalClient.getText().trim();
-            String ville = txtVilleClient.getText().trim();
-            String telephone = txtTelephoneClient.getText().trim();
-            String email = txtEmailClient.getText().trim();
-            String nSs = txtNssClient.getText().trim();
-            String dateNaissance = txtDateNaissanceClient.getText().trim();
-            String mutuelle = txtMutuelleClient.getText().trim();
-            String medecinRef = txtMedecinrefClient.getText().trim();
-
-            if (nom.isEmpty() || prenom.isEmpty() || adresse.isEmpty() || codePostal.isEmpty() ||
-                    ville.isEmpty() || telephone.isEmpty() || email.isEmpty() || nSs.isEmpty() ||
-                    dateNaissance.isEmpty() || mutuelle.isEmpty() || medecinRef.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Tous les champs sont obligatoires !", "Erreur", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            new Client(nom, prenom, adresse, codePostal, ville, telephone, email, nSs, dateNaissance, mutuelle, medecinRef);
-            chargerClient();
-            viderChampsClient();
-            JOptionPane.showMessageDialog(this, "Client ajouté avec succès !", "Succès", JOptionPane.INFORMATION_MESSAGE);
-
-        } catch (SaisieException e) {
-            JOptionPane.showMessageDialog(this, "Erreur de saisie : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Erreur : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
-        }
     }
 
     private void ajouterMedecin() {
@@ -1231,57 +685,8 @@ public class MainSwing extends JFrame {
             JOptionPane.showMessageDialog(this, "Erreur inattendue : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
         }
     }
-    private void modifierClient() {
-        int selectedRow = tableClient.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Sélectionnez un client à modifier.");
-            return;
-        }
 
-        try {
-            Client client = Client.getClients().get(selectedRow);
-            client.setNom(txtNomClient.getText());
-            client.setPrenom(txtPrenomClient.getText());
-            client.setAdresse(txtAdresseClient.getText());
-            client.setCodePostal(txtCodePostalClient.getText());
-            client.setVille(txtVilleClient.getText());
-            client.setTelephone(txtTelephoneClient.getText());
-            client.setEmail(txtEmailClient.getText());
-            client.setNss(txtNssClient.getText());
-            client.setDateNaissance(txtDateNaissanceClient.getText());
-            client.setMutuelle(txtMutuelleClient.getText());
-            client.setMedecinRef(txtMedecinrefClient.getText());
 
-            chargerClient();
-            viderChampsClient();
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erreur : " + ex.getMessage());
-        }
-    }
-    private void modifierMedecin() {
-        int selectedRow = tableMedecin.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Sélectionnez un médecin à modifier.");
-            return;
-        }
-
-        try {
-            Medecin medecin = Medecin.getMedecins().get(selectedRow);
-            medecin.setNom(txtNomMedecin.getText());
-            medecin.setPrenom(txtPrenomMedecin.getText());
-            medecin.setAdresse(txtAdresseMedecin.getText());
-            medecin.setCodePostal(txtCodePostalMedecin.getText());
-            medecin.setVille(txtVilleMedecin.getText());
-            medecin.setTelephone(txtTelephoneMedecin.getText());
-            medecin.setEmail(txtEmailMedecin.getText());
-            medecin.setRPPS(txtRPPSMedecin.getText());
-
-            chargerMedecin();
-            viderChampsMedecin();
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erreur : " + ex.getMessage());
-        }
-    }
     private void modifierMutuelle() {
         int selectedRow = tableMutuelle.getSelectedRow();
         if (selectedRow == -1) {
@@ -1331,48 +736,8 @@ public class MainSwing extends JFrame {
     }
 
 
-    private void supprimerClient() {
-        int selectedRow = tableClient.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Sélectionnez un client à supprimer.");
-            return;
-        }
 
-        int confirm = JOptionPane.showConfirmDialog(this, "Confirmer la suppression ?", "Supprimer", JOptionPane.YES_NO_OPTION);
-        if (confirm == JOptionPane.YES_OPTION) {
-            Client.getClients().remove(selectedRow);
-            chargerClient();
-            viderChampsClient();
-        }
-    }
-    private void supprimerMedecin() {
-        int selectedRow = tableMedecin.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Sélectionnez un médecin à supprimer.");
-            return;
-        }
 
-        int confirm = JOptionPane.showConfirmDialog(this, "Confirmer la suppression ?", "Supprimer", JOptionPane.YES_NO_OPTION);
-        if (confirm == JOptionPane.YES_OPTION) {
-            Medecin.getMedecins().remove(selectedRow);
-            chargerMedecin();
-            viderChampsMedecin();
-        }
-    }
-    private void supprimerMutuelle() {
-        int selectedRow = tableMutuelle.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Sélectionnez une mutuelle à supprimer.");
-            return;
-        }
-
-        int confirm = JOptionPane.showConfirmDialog(this, "Confirmer la suppression ?", "Supprimer", JOptionPane.YES_NO_OPTION);
-        if (confirm == JOptionPane.YES_OPTION) {
-            Mutuelle.getMutuelles().remove(selectedRow);
-            chargerMutuelle();
-            viderChampsMutuelle();
-        }
-    }
     private void supprimerMedicament() {
         int selectedRow = tableMedicament.getSelectedRow();
         if (selectedRow == -1) {
@@ -1386,31 +751,6 @@ public class MainSwing extends JFrame {
             chargerMedicament();
             viderChampsMedicament();
         }
-    }
-
-    private void viderChampsClient() {
-        txtNomClient.setText("");
-        txtPrenomClient.setText("");
-        txtAdresseClient.setText("");
-        txtCodePostalClient.setText("");
-        txtVilleClient.setText("");
-        txtTelephoneClient.setText("");
-        txtEmailClient.setText("");
-        txtNssClient.setText("");
-        txtDateNaissanceClient.setText("");
-        txtMutuelleClient.setText("");
-        txtMedecinrefClient.setText("");
-    }
-
-    private void viderChampsMedecin() {
-        txtNomMedecin.setText("");
-        txtPrenomMedecin.setText("");
-        txtAdresseMedecin.setText("");
-        txtCodePostalMedecin.setText("");
-        txtVilleMedecin.setText("");
-        txtTelephoneMedecin.setText("");
-        txtEmailMedecin.setText("");
-        txtRPPSMedecin.setText("");
     }
 
     private void viderChampsMutuelle() {
@@ -1434,92 +774,8 @@ public class MainSwing extends JFrame {
     }
 
     // Méthodes de recherche
-    private void rechercherClientParNom() {
-        String nom = txtRechercheNom.getText().trim();
-        if (nom.isEmpty()) {
-            chargerClient();
-            return;
-        }
 
-        modelClient.setRowCount(0);
-        List<Client> resultats = Client.rechercherClientParNom(nom);
-        for (Client c : resultats) {
-            modelClient.addRow(new Object[]{
-                    c.getNom(), c.getPrenom(), c.getAdresse(), c.getCodePostal(),
-                    c.getVille(), c.getTelephone(), c.getEmail(), c.getNss(),
-                    c.getDateNaissance(), c.getMutuelle(), c.getMedecinRef()
-            });
-        }
-    }
 
-    private void rechercherClientParEmail() {
-        String email = txtRechercheEmail.getText().trim();
-        if (email.isEmpty()) {
-            chargerClient();
-            return;
-        }
-
-        modelClient.setRowCount(0);
-        List<Client> resultats = Client.rechercherClientParEmail(email);
-        for (Client c : resultats) {
-            modelClient.addRow(new Object[]{
-                    c.getNom(), c.getPrenom(), c.getAdresse(), c.getCodePostal(),
-                    c.getVille(), c.getTelephone(), c.getEmail(), c.getNss(),
-                    c.getDateNaissance(), c.getMutuelle(), c.getMedecinRef()
-            });
-        }
-    }
-
-    private void rechercherClientParNss() {
-        String nss = txtRechercheNss.getText().trim();
-        if (nss.isEmpty()) {
-            chargerClient();
-            return;
-        }
-
-        modelClient.setRowCount(0);
-        List<Client> resultats = Client.rechercherClientParNss(nss);
-        for (Client c : resultats) {
-            modelClient.addRow(new Object[]{
-                    c.getNom(), c.getPrenom(), c.getAdresse(), c.getCodePostal(),
-                    c.getVille(), c.getTelephone(), c.getEmail(), c.getNss(),
-                    c.getDateNaissance(), c.getMutuelle(), c.getMedecinRef()
-            });
-        }
-    }
-
-    private void rechercherMedecinParNom(String nom) {
-        if (nom.trim().isEmpty()) {
-            chargerMedecin();
-            return;
-        }
-
-        modelMedecin.setRowCount(0);
-        List<Medecin> resultats = Medecin.rechercherParNom(nom);
-        for (Medecin m : resultats) {
-            modelMedecin.addRow(new Object[]{
-                    m.getNom(), m.getPrenom(), m.getAdresse(), m.getCodePostal(),
-                    m.getVille(), m.getTelephone(), m.getEmail(), m.getRPPS()
-            });
-        }
-    }
-
-    private void rechercherMedecinParRpps() {
-        String rpps = txtRechercheRpps.getText().trim();
-        if (rpps.isEmpty()) {
-            chargerMedecin();
-            return;
-        }
-
-        modelMedecin.setRowCount(0);
-        List<Medecin> resultats = Medecin.rechercherParRpps(rpps);
-        for (Medecin m : resultats) {
-            modelMedecin.addRow(new Object[]{
-                    m.getNom(), m.getPrenom(), m.getAdresse(), m.getCodePostal(),
-                    m.getVille(), m.getTelephone(), m.getEmail(), m.getRPPS()
-            });
-        }
-    }
 
     private void rechercherMutuelleParNom(String nom) {
         if (nom.trim().isEmpty()) {

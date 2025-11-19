@@ -66,7 +66,7 @@ public class MedecinDAO extends AbstractDAO<Medecin> {
     }
     public int countMedecins() {
         String sql = "SELECT COUNT(*) AS total FROM medecin";
-        try (Connection conn = DCSingletonHikaricp.getInstanceDB();
+        try (Connection conn = DCSingletonHikaricp.getConnection();
              PreparedStatement pst = conn.prepareStatement(sql);
              ResultSet rs = pst.executeQuery()) {
 
@@ -79,6 +79,4 @@ public class MedecinDAO extends AbstractDAO<Medecin> {
         }
         return 0;
     }
-
 }
-

@@ -66,7 +66,7 @@ public class MutuelleDAO extends AbstractDAO<Mutuelle> {
     }
     public int countMutuelles() {
         String sql = "SELECT COUNT(*) AS total FROM mutuelle";
-        try (Connection conn = DCSingletonHikaricp.getInstanceDB();
+        try (Connection conn = DCSingletonHikaricp.getConnection();
              PreparedStatement pst = conn.prepareStatement(sql);
              ResultSet rs = pst.executeQuery()) {
 

@@ -13,27 +13,36 @@ import java.util.logging.Logger;
 
 public class DCSingletonHikaricp {
 
-    private static final Logger LOGGER = Logger.getLogger(DatabaseConnectionSingleton.class.getName());
-    private static final String cheminconf = "conf.properties";
+    private static final Logger LOGGER = Logger.getLogger(DCSingletonHikaricp.class.getName());
+    private static final String CHEMIN_CONF = "conf.properties";
 
-    private static final Properties props = new Properties();
-    private static HikariDataSource dataSource; // plus de Connection unique !
-
-    private DCSingletonHikaricp() {
-        // Constructeur privé
-    }
+    // Pool HikariCP statique
+    private static HikariDataSource dataSource;
 
     /**
-     * Initialise le pool HikariCP si nécessaire.
+     * Retourne une connexion depuis le pool
      */
-    private static void initDataSource() {
-        if (dataSource != null) return;
+    public static Connection getConnection() {
+        if (dataSource == null) {
+            initDataSource();
+        }
 
-        try (InputStream is = DatabaseConnectionSingleton.class.getClassLoader().getResourceAsStream(cheminconf)) {
+        try {
+            return dataSource.getConnection();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Impossible d'obtenir une connexion", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    // Initialisation du pool
+    private static void initDataSource() {
+        try (InputStream is = DCSingletonHikaricp.class.getClassLoader().getResourceAsStream(CHEMIN_CONF)) {
             if (is == null) {
-                throw new RuntimeException("Fichier " + cheminconf + " introuvable !");
+                throw new RuntimeException("Fichier " + CHEMIN_CONF + " introuvable !");
             }
 
+            Properties props = new Properties();
             props.load(is);
 
             HikariConfig config = new HikariConfig();
@@ -41,8 +50,6 @@ public class DCSingletonHikaricp {
             config.setUsername(props.getProperty("jdbc.login"));
             config.setPassword(props.getProperty("jdbc.password"));
             config.setDriverClassName(props.getProperty("jdbc.driver.class"));
-
-            // Options recommandées
             config.setMaximumPoolSize(10);
             config.setMinimumIdle(2);
             config.setIdleTimeout(60000);
@@ -60,31 +67,13 @@ public class DCSingletonHikaricp {
     }
 
     /**
-     * Retourne une connexion provenant du pool.
+     * Ferme le pool
      */
-    public static Connection getInstanceDB() {
-        if (dataSource == null) {
-            initDataSource();
-        }
-
-        try {
-            Connection conn = dataSource.getConnection();
-            LOGGER.log(Level.FINE, "Connexion obtenue depuis le pool.");
-            return conn;
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Impossible d'obtenir une connexion depuis HikariCP", e);
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Ferme le pool (à appeler uniquement à l'arrêt de l'application).
-     */
-    public static void closeInstanceDB() {
+    public static void closePool() {
         if (dataSource != null) {
             dataSource.close();
-            LOGGER.log(Level.INFO, "Pool HikariCP fermé.");
             dataSource = null;
+            LOGGER.log(Level.INFO, "Pool HikariCP fermé.");
         }
     }
 }

@@ -21,7 +21,7 @@ public abstract class AbstractDAO<T> {
     // ======================================================
 
     public boolean insert(T obj) {
-        try (Connection conn = DCSingletonHikaricp.getInstanceDB();
+        try (Connection conn = DCSingletonHikaricp.getConnection();
              PreparedStatement pst = prepareInsert(obj, conn)) {
 
             int rows = pst.executeUpdate();
@@ -34,7 +34,7 @@ public abstract class AbstractDAO<T> {
     }
 
     public boolean update(T obj) {
-        try (Connection conn = DCSingletonHikaricp.getInstanceDB();
+        try (Connection conn = DCSingletonHikaricp.getConnection();
              PreparedStatement pst = prepareUpdate(obj, conn)) {
 
             int rows = pst.executeUpdate();
@@ -49,7 +49,7 @@ public abstract class AbstractDAO<T> {
     public boolean delete(int id) {
         String sql = "DELETE FROM " + getTableName() + " WHERE " + getPrimaryKey() + "=?";
 
-        try (Connection conn = DCSingletonHikaricp.getInstanceDB();
+        try (Connection conn = DCSingletonHikaricp.getConnection();
              PreparedStatement pst = conn.prepareStatement(sql)) {
 
             pst.setInt(1, id);
@@ -64,7 +64,7 @@ public abstract class AbstractDAO<T> {
     public T findById(int id) {
         String sql = "SELECT * FROM " + getTableName() + " WHERE " + getPrimaryKey() + "=?";
 
-        try (Connection conn = DCSingletonHikaricp.getInstanceDB();
+        try (Connection conn = DCSingletonHikaricp.getConnection();
              PreparedStatement pst = conn.prepareStatement(sql)) {
 
             pst.setInt(1, id);
@@ -86,7 +86,7 @@ public abstract class AbstractDAO<T> {
         List<T> list = new ArrayList<>();
         String sql = "SELECT * FROM " + getTableName();
 
-        try (Connection conn = DCSingletonHikaricp.getInstanceDB();
+        try (Connection conn = DCSingletonHikaricp.getConnection();
              PreparedStatement pst = conn.prepareStatement(sql);
              ResultSet rs = pst.executeQuery()) {
 

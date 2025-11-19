@@ -72,7 +72,7 @@ public class OrdonnanceDAO extends AbstractDAO<Ordonnance> {
 
         if (success) {
             // récupérer l'id généré
-            try (Connection conn = training.afpa.cda24060.Connection.DCSingletonHikaricp.getInstanceDB();
+            try (Connection conn = training.afpa.cda24060.Connection.DCSingletonHikaricp.getConnection();
                  PreparedStatement pst = conn.prepareStatement("SELECT LAST_INSERT_ID()")) {
                 try (ResultSet rs = pst.executeQuery()) {
                     if (rs.next()) {
