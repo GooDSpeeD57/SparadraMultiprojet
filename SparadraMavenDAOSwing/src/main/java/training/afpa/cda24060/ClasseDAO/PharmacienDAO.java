@@ -10,27 +10,27 @@ public class PharmacienDAO extends AbstractDAO<Pharmacien> {
 
     @Override
     protected String getTableName() {
-        return "pharmacien";
+        return "Pharmacien";
     }
 
     @Override
     protected String getPrimaryKey() {
-        return "idPharmacien";
+        return "id_Pharmacien";
     }
 
     @Override
     protected Pharmacien map(ResultSet rs) throws Exception {
         Pharmacien p = new Pharmacien();
-        p.setNom(rs.getString("nom"));
-        p.setPrenom(rs.getString("prenom"));
-        p.setRPPS(rs.getString("rPPS"));
+        p.setNom(rs.getString("nomPharmacien"));
+        p.setPrenom(rs.getString("prenomPharmacien"));
+        p.setRPPS(rs.getString("rPPSPharmacien"));
         // si tu as un idPharmacien en BDD, tu peux ajouter un setter ici
         return p;
     }
 
     @Override
     protected PreparedStatement prepareInsert(Pharmacien p, Connection conn) throws Exception {
-        String sql = "INSERT INTO pharmacien (nom, prenom, rPPS) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO pharmacien (nomPharmacien, prenomPharmacien, rPPSPharmacien) VALUES (?, ?, ?)";
         PreparedStatement pst = conn.prepareStatement(sql);
         pst.setString(1, p.getNom());
         pst.setString(2, p.getPrenom());
@@ -40,7 +40,7 @@ public class PharmacienDAO extends AbstractDAO<Pharmacien> {
 
     @Override
     protected PreparedStatement prepareUpdate(Pharmacien p, Connection conn) throws Exception {
-        String sql = "UPDATE pharmacien SET nom=?, prenom=?, rPPS=? WHERE idPharmacien=?";
+        String sql = "UPDATE pharmacien SET nomPharmacien=?, prenomPharmacien=?, rPPSPharmacien=? WHERE idPharmacien=?";
         PreparedStatement pst = conn.prepareStatement(sql);
         pst.setString(1, p.getNom());
         pst.setString(2, p.getPrenom());

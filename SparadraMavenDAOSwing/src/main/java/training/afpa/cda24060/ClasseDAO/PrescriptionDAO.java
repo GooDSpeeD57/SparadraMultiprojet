@@ -15,14 +15,14 @@ public class PrescriptionDAO extends AbstractDAO<Prescription> {
 
     @Override
     protected String getPrimaryKey() {
-        return "idPrescription";
+        return "id_Prescription";
     }
 
     @Override
     protected Prescription map(ResultSet rs) throws Exception {
         Prescription prescription = new Prescription();
-        prescription.setIdPrescription(rs.getInt("idPrescription"));
-        prescription.setIdOrdonnance(rs.getInt("idOrdonnance"));
+        prescription.setIdPrescription(rs.getInt("id_Prescription"));
+        prescription.setIdOrdonnance(rs.getInt("id_Ordonnance"));
         prescription.setNomMedicament(rs.getString("nomMedicament"));
         prescription.setPrixUnitaire(rs.getDouble("prixUnitaire"));
         prescription.setQuantitePrescrite(rs.getInt("quantitePrescrite"));
@@ -31,7 +31,7 @@ public class PrescriptionDAO extends AbstractDAO<Prescription> {
 
     @Override
     protected PreparedStatement prepareInsert(Prescription obj, Connection conn) throws Exception {
-        String sql = "INSERT INTO Prescription (idOrdonnance, nomMedicament, prixUnitaire, quantitePrescrite) " +
+        String sql = "INSERT INTO Prescription (id_Ordonnance, nomMedicament, prixUnitaire, quantitePrescrite) " +
                 "VALUES (?, ?, ?, ?)";
         PreparedStatement pst = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
         pst.setInt(1, obj.getIdOrdonnance());
@@ -43,8 +43,8 @@ public class PrescriptionDAO extends AbstractDAO<Prescription> {
 
     @Override
     protected PreparedStatement prepareUpdate(Prescription obj, Connection conn) throws Exception {
-        String sql = "UPDATE Prescription SET idOrdonnance=?, nomMedicament=?, prixUnitaire=?, quantitePrescrite=? " +
-                "WHERE idPrescription=?";
+        String sql = "UPDATE Prescription SET id_Ordonnance=?, nomMedicament=?, prixUnitaire=?, quantitePrescrite=? " +
+                "WHERE id_Prescription=?";
         PreparedStatement pst = conn.prepareStatement(sql);
         pst.setInt(1, obj.getIdOrdonnance());
         pst.setString(2, obj.getNomMedicament());
@@ -57,7 +57,7 @@ public class PrescriptionDAO extends AbstractDAO<Prescription> {
     // Optionnel : récupérer toutes les prescriptions d'une ordonnance
     public java.util.List<Prescription> findByOrdonnance(int idOrdonnance) {
         java.util.List<Prescription> list = new java.util.ArrayList<>();
-        String sql = "SELECT * FROM Prescription WHERE idOrdonnance=?";
+        String sql = "SELECT * FROM Prescription WHERE id_Ordonnance=?";
         try (Connection conn = training.afpa.cda24060.Connection.DCSingletonHikaricp.getConnection();
              PreparedStatement pst = conn.prepareStatement(sql)) {
 

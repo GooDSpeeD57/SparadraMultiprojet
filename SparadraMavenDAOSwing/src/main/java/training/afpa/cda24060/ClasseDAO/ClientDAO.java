@@ -198,6 +198,29 @@ public class ClientDAO extends AbstractDAO<Client> {
         return null;
     }
 
+    public List<Client> findAll() {
+        List<Client> list = new ArrayList<>();
+        String sql = "SELECT " +
+                "c.id_Client, c.nomClient, c.prenomClient, c.adresseClient, c.codePostalClient, c.villeClient, " +
+                "c.telephoneClient, c.mailClient, c.nssClient, c.dateNaissance, c.id_Regime, c.id_Medecin, c.id_Mutuelle, c.idTitulaireMutuelle, " +
+                "r.nomRegime AS nomRegime, m.nomMedecin AS nomMedecin, mu.nomMutuelle AS nomMutuelle " +
+                "FROM Client c " +
+                "LEFT JOIN Medecin m ON c.id_Medecin = m.id_Medecin " +
+                "LEFT JOIN Regime r ON c.id_Regime = r.id_Regime " +
+                "LEFT JOIN Mutuelle mu ON c.id_Mutuelle = mu.id_Mutuelle";
+        try (Connection conn = DCSingletonHikaricp.getConnection();
+             PreparedStatement pst = conn.prepareStatement(sql);
+             ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                Client c = map(rs);
+                if (c != null) list.add(c);
+            }
+        } catch (Exception e) {
+            System.err.println("Erreur findAll Client : " + e.getMessage());
+        }
+        return list;
+    }
+
     public int countClient() {
         String sql = "SELECT COUNT(*) AS total FROM Client";
         try (Connection conn = DCSingletonHikaricp.getConnection();

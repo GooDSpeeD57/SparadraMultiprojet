@@ -14,7 +14,7 @@ public class Ordonnance {
 
     private static final Logger logger = LoggerFactory.getLogger(Ordonnance.class);
 
-    private int idOrdonnance;  // <-- clé primaire
+    private int id_Ordonnance;  // <-- clé primaire
     private Medecin medecin;
     private Client client;
     private List<Prescription> prescriptions;
@@ -34,12 +34,12 @@ public class Ordonnance {
     }
 
     // ===================== Getters / Setters =====================
-    public int getIdOrdonnance() {
-        return idOrdonnance;
+    public int getId_Ordonnance() {
+        return id_Ordonnance;
     }
 
-    public void setIdOrdonnance(int idOrdonnance) {
-        this.idOrdonnance = idOrdonnance;
+    public void setId_Ordonnance(int id_Ordonnance) {
+        this.id_Ordonnance = id_Ordonnance;
     }
 
     public Medecin getMedecin() {
@@ -101,7 +101,7 @@ public class Ordonnance {
         }
 
         return "\nOrdonnance"
-                + "\nID            : " + idOrdonnance
+                + "\nID            : " + id_Ordonnance
                 + "\nMédecin       : " + medecin
                 + "\nClient        : " + client
                 + "\nDate          : " + getDateOrdonnanceFormatee()

@@ -24,7 +24,7 @@ public class OrdonnanceDAO extends AbstractDAO<Ordonnance> {
 
     @Override
     protected String getPrimaryKey() {
-        return "idOrdonnance";
+        return "id_Ordonnance";
     }
 
     @Override
@@ -37,10 +37,10 @@ public class OrdonnanceDAO extends AbstractDAO<Ordonnance> {
 
         LocalDate dateOrdonnance = rs.getDate("dateCreation").toLocalDate();
 
-        List<Prescription> prescriptions = prescriptionDAO.findByOrdonnance(rs.getInt("idOrdonnance"));
+        List<Prescription> prescriptions = prescriptionDAO.findByOrdonnance(rs.getInt("id_Ordonnance"));
 
         Ordonnance ordonnance = new Ordonnance(medecin, client, prescriptions, dateOrdonnance);
-        ordonnance.setIdOrdonnance(rs.getInt("idOrdonnance")); // ajout de l'id
+        ordonnance.setId_Ordonnance(rs.getInt("id_Ordonnance")); // ajout de l'id
         return ordonnance;
     }
 
@@ -56,12 +56,12 @@ public class OrdonnanceDAO extends AbstractDAO<Ordonnance> {
 
     @Override
     protected PreparedStatement prepareUpdate(Ordonnance obj, Connection conn) throws Exception {
-        String sql = "UPDATE Ordonnance SET dateCreation=?, id_Client=?, id_Medecin=? WHERE idOrdonnance=?";
+        String sql = "UPDATE Ordonnance SET dateCreation=?, id_Client=?, id_Medecin=? WHERE id_Ordonnance=?";
         PreparedStatement pst = conn.prepareStatement(sql);
         pst.setDate(1, java.sql.Date.valueOf(obj.getDateOrdonnance()));
         pst.setInt(2, obj.getClient().getIdClient());
         pst.setInt(3, obj.getMedecin().getIdMedecin());
-        pst.setInt(4, obj.getIdOrdonnance());
+        pst.setInt(4, obj.getId_Ordonnance());
         return pst;
     }
 
@@ -76,9 +76,9 @@ public class OrdonnanceDAO extends AbstractDAO<Ordonnance> {
                  PreparedStatement pst = conn.prepareStatement("SELECT LAST_INSERT_ID()")) {
                 try (ResultSet rs = pst.executeQuery()) {
                     if (rs.next()) {
-                        obj.setIdOrdonnance(rs.getInt(1));
+                        obj.setId_Ordonnance(rs.getInt(1));
                         for (Prescription p : obj.getPrescriptions()) {
-                            p.setIdOrdonnance(obj.getIdOrdonnance());
+                            p.setIdOrdonnance(obj.getId_Ordonnance());
                             prescriptionDAO.insert(p);
                         }
                     }
