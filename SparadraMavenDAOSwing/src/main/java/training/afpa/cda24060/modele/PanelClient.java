@@ -177,7 +177,26 @@ public class PanelClient extends JPanel {
             client.setDateNaissance(txtDateNaissanceClient.getText().trim());
             client.setIdTitulaireMutuelle(txtIdTitulaireClient.getText().trim());
 
-            // Ajout via DAO
+            // -------- Ajout des champs Regime / Medecin / Mutuelle ----------
+            if (!txtIdRegimeClient.getText().trim().isEmpty()) {
+                Regime r = new Regime();
+                r.setIdRegime(Integer.parseInt(txtIdRegimeClient.getText().trim()));
+                client.setRegime(r);
+            }
+
+            if (!txtIdMedecinClient.getText().trim().isEmpty()) {
+                Medecin m = new Medecin();
+                m.setIdMedecin(Integer.parseInt(txtIdMedecinClient.getText().trim()));
+                client.setMedecin(m);
+            }
+
+            if (!txtIdMutuelleClient.getText().trim().isEmpty()) {
+                Mutuelle mu = new Mutuelle();
+                mu.setIdMutuelle(Integer.parseInt(txtIdMutuelleClient.getText().trim()));
+                client.setMutuelle(mu);
+            }
+            // -----------------------------------------------------------------
+
             if (clientDAO.insert(client)) {
                 chargerClients();
                 viderChamps();

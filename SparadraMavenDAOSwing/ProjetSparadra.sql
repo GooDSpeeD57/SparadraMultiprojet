@@ -36,6 +36,7 @@ CREATE TABLE Mutuelle(
    villeMutuelle VARCHAR(50),
    telephoneMutuelle VARCHAR(17),
    mailMutuelle VARCHAR(100) NOT NULL,
+   departementMutuelle VARCHAR(50),
    tRemboursement DECIMAL(5,2) NOT NULL
 );
 
@@ -152,7 +153,7 @@ CREATE TABLE SeFournit(
 );
 
 CREATE TABLE Prescription(
-    idPrescription INT AUTO_INCREMENT PRIMARY KEY,
+    id_Prescription INT AUTO_INCREMENT PRIMARY KEY,
     id_Ordonnance INT NOT NULL,
     nomMedicament VARCHAR(255) NOT NULL,
     prixUnitaire DOUBLE NOT NULL,
@@ -161,13 +162,13 @@ CREATE TABLE Prescription(
 );
 
 -- Insertion des mutuelles
-INSERT INTO Mutuelle (nomMutuelle, adresseMutuelle, codePostalMutuelle, villeMutuelle, telephoneMutuelle, mailMutuelle, tRemboursement)
+INSERT INTO Mutuelle (nomMutuelle, adresseMutuelle, codePostalMutuelle, villeMutuelle, telephoneMutuelle, mailMutuelle,departementMutuelle, tRemboursement)
 VALUES
-('Caisse Régional Crédit Agricole Mutuelle Lorraine', '56 Avenue André Malraux', '57000', 'Metz', '09 64 40 37 11', 'contact@camutuellelorraine.fr', 70),
-('Mutuelle Nationale Territoriale Section Metz', '1 rue du Pont Moreau', '57000', 'Metz', '03 87 37 58 32', 'service@mnt.fr', 75),
-('Mutuelle Nationale Territoriale Agence Mitterrand', '16 avenue François Mitterrand', '57000', 'Metz', '09 72 72 02 02', 'metz@mnt.fr', 75),
-('Mutlor Les Mutuelles de Lorraine', '11 Rue du Colonel Merlin', '54400', 'Longwy', '03 82 25 79 00', 'contact@mutlor.fr', 65),
-('Mutlor Les Mutuelles de Lorraine Nancy', '6 Rue de la Visitation', '54000', 'Nancy', '+33 3 83 36 77 07', 'nancy@mutlor.fr', 65);
+('Caisse Régional Crédit Agricole Mutuelle Lorraine', '56 Avenue André Malraux', '57000', 'Metz', '09 64 40 37 11', 'contact@camutuellelorraine.fr','Moselle', 70),
+('Mutuelle Nationale Territoriale Section Metz', '1 rue du Pont Moreau', '57000', 'Metz', '03 87 37 58 32', 'service@mnt.fr','Moselle', 75),
+('Mutuelle Nationale Territoriale Agence Mitterrand', '16 avenue François Mitterrand', '57000', 'Metz', '09 72 72 02 02', 'metz@mnt.fr','Moselle', 75),
+('Mutlor Les Mutuelles de Lorraine', '11 Rue du Colonel Merlin', '54400', 'Longwy', '03 82 25 79 00', 'contact@mutlor.fr','Moselle', 65),
+('Mutlor Les Mutuelles de Lorraine Nancy', '6 Rue de la Visitation', '54000', 'Nancy', '+33 3 83 36 77 07', 'nancy@mutlor.fr','Meurthe-et-Moselle', 65);
 
 -- Insertion des médecins
 INSERT INTO Medecin (nomMedecin, prenomMedecin, adresseMedecin, codePostalMedecin, villeMedecin, telephoneMedecin, mailMedecin, rppsMedecin)
@@ -185,7 +186,7 @@ VALUES
 
 -- Insertion des régimes 
 INSERT INTO Regime (nomRegime, tauxRemboursement) VALUES
-('ALD (Affection Longue Durée)', 100.00),
+('ALD', 100.00),
 ('Régime général', 70.00),
 ('Régime étudiant', 60.00),
 ('Régime agricole', 70.00),

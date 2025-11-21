@@ -79,6 +79,7 @@ public class ClientDAO extends AbstractDAO<Client> {
                     "id_Regime, id_Medecin, id_Mutuelle, idTitulaireMutuelle) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement pst = conn.prepareStatement(sql);
+
             pst.setString(1, c.getNom());
             pst.setString(2, c.getPrenom());
             pst.setString(3, c.getAdresse());
@@ -88,11 +89,27 @@ public class ClientDAO extends AbstractDAO<Client> {
             pst.setString(7, c.getEmail());
             pst.setString(8, c.getNss());
             pst.setDate(9, Date.valueOf(c.getDateNaissance()));
-            pst.setInt(10, c.getRegime().getIdRegime());
-            pst.setInt(11, c.getMedecin().getIdMedecin());
-            pst.setInt(12, c.getMutuelle().getIdMutuelle());
+
+            // ---- Sécurisation des champs null ----
+            if (c.getRegime() != null)
+                pst.setInt(10, c.getRegime().getIdRegime());
+            else
+                pst.setNull(10, java.sql.Types.INTEGER);
+
+            if (c.getMedecin() != null)
+                pst.setInt(11, c.getMedecin().getIdMedecin());
+            else
+                pst.setNull(11, java.sql.Types.INTEGER);
+
+            if (c.getMutuelle() != null)
+                pst.setInt(12, c.getMutuelle().getIdMutuelle());
+            else
+                pst.setNull(12, java.sql.Types.INTEGER);
+
             pst.setString(13, c.getIdTitulaireMutuelle());
+
             return pst;
+
         } catch (Exception e) {
             System.err.println("Erreur prepareInsert Client : " + e.getMessage());
             return null;

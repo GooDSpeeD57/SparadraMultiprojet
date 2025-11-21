@@ -50,7 +50,7 @@ public class Client extends Personne {
 
     public void setNss(String nss) throws SaisieException {
         if (!RegexValidator.validerNSS(nss)) {
-            throw new SaisieException("Numéro de Sécurité Sociale incorrect ! 15 chiffres attendus.");
+            throw new SaisieException("Numéro de Sécurité Sociale incorrect ! 12 chiffres attendus.");
         }
         this.nss = nss;
     }
