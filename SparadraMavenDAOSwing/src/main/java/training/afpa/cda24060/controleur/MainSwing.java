@@ -4,7 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import training.afpa.cda24060.modele.*;
+
+import training.afpa.cda24060.vue.PanelSwing.*;
 
 public class MainSwing extends JFrame {
 

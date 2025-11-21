@@ -1,4 +1,4 @@
-package training.afpa.cda24060.modele;
+package training.afpa.cda24060.vue.PanelSwing;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -13,7 +13,7 @@ import training.afpa.cda24060.ClasseDAO.ClientDAO;
 import training.afpa.cda24060.ClasseDAO.MedecinDAO;
 import training.afpa.cda24060.ClasseDAO.MedicamentDAO;
 import training.afpa.cda24060.ClasseDAO.OrdonnanceDAO;
-import training.afpa.cda24060.ClasseDAO.PrescriptionDAO;
+import training.afpa.cda24060.modele.*;
 
 public class PanelOrdonnance extends JPanel {
 

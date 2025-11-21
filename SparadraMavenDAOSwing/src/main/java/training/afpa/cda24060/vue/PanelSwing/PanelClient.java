@@ -1,4 +1,4 @@
-package training.afpa.cda24060.modele;
+package training.afpa.cda24060.vue.PanelSwing;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -9,6 +9,10 @@ import java.awt.event.MouseEvent;
 import java.util.List;
 import training.afpa.cda24060.ClasseDAO.ClientDAO;
 import training.afpa.cda24060.exception.SaisieException;
+import training.afpa.cda24060.modele.Client;
+import training.afpa.cda24060.modele.Medecin;
+import training.afpa.cda24060.modele.Mutuelle;
+import training.afpa.cda24060.modele.Regime;
 
 public class PanelClient extends JPanel {
 
@@ -137,7 +141,7 @@ public class PanelClient extends JPanel {
         modelClient = new DefaultTableModel(colonnes, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false;
+                return true;
             }
         };
         tableClient = new JTable(modelClient);

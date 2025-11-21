@@ -7,3 +7,6 @@
 21-11-2025 09:07:45 [AWT-EventQueue-0] INFO  com.zaxxer.hikari.HikariDataSource - AFPA-HikariPool - Starting...
 21-11-2025 09:07:45 [AWT-EventQueue-0] INFO  com.zaxxer.hikari.pool.HikariPool - AFPA-HikariPool - Added connection com.mysql.cj.jdbc.ConnectionImpl@61d5b81b
 21-11-2025 09:07:45 [AWT-EventQueue-0] INFO  com.zaxxer.hikari.HikariDataSource - AFPA-HikariPool - Start completed.
+21-11-2025 09:21:59 [AWT-EventQueue-0] INFO  com.zaxxer.hikari.HikariDataSource - AFPA-HikariPool - Starting...
+21-11-2025 09:21:59 [AWT-EventQueue-0] INFO  com.zaxxer.hikari.pool.HikariPool - AFPA-HikariPool - Added connection com.mysql.cj.jdbc.ConnectionImpl@651a0d84
+21-11-2025 09:21:59 [AWT-EventQueue-0] INFO  com.zaxxer.hikari.HikariDataSource - AFPA-HikariPool - Start completed.

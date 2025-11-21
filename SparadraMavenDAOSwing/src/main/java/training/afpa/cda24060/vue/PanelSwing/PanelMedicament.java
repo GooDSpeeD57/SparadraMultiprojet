@@ -1,7 +1,8 @@
-package training.afpa.cda24060.modele;
+package training.afpa.cda24060.vue.PanelSwing;
 
 import training.afpa.cda24060.ClasseDAO.MedicamentDAO;
 import training.afpa.cda24060.exception.SaisieException;
+import training.afpa.cda24060.modele.Medicament;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;

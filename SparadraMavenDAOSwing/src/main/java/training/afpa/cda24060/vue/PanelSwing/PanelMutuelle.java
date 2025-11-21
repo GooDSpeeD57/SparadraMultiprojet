@@ -1,4 +1,4 @@
-package training.afpa.cda24060.modele;
+package training.afpa.cda24060.vue.PanelSwing;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import java.util.List;
 import training.afpa.cda24060.ClasseDAO.MutuelleDAO;
 import training.afpa.cda24060.exception.SaisieException;
+import training.afpa.cda24060.modele.Mutuelle;
 
 public class PanelMutuelle extends JPanel {
 

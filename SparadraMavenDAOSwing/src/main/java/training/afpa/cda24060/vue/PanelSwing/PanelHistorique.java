@@ -1,4 +1,4 @@
-package training.afpa.cda24060.modele;
+package training.afpa.cda24060.vue.PanelSwing;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
