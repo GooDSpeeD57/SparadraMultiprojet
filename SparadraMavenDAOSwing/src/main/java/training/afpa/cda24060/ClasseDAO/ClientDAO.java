@@ -20,12 +20,12 @@ public class ClientDAO extends AbstractDAO<Client> {
 
     @Override
     protected String getTableName() {
-        return "Client"; // Nom exact de la table
+        return "Client";
     }
 
     @Override
     protected String getPrimaryKey() {
-        return "id_Client"; // Nom exact de la PK
+        return "id_Client";
     }
 
     @Override
@@ -49,16 +49,20 @@ public class ClientDAO extends AbstractDAO<Client> {
 
             c.setIdTitulaireMutuelle(rs.getString("idTitulaireMutuelle"));
 
+            // Regime
             Regime r = new Regime();
             r.setIdRegime(rs.getInt("id_Regime"));
             r.setNomRegime(rs.getString("nomRegime") != null ? rs.getString("nomRegime") : "");
             c.setRegime(r);
 
+            // Medecin
             Medecin m = new Medecin();
             m.setIdMedecin(rs.getInt("id_Medecin"));
             m.setNom(rs.getString("nomMedecin") != null ? rs.getString("nomMedecin") : "");
+            m.setPrenom(rs.getString("prenomMedecin") != null ? rs.getString("prenomMedecin") : "");
             c.setMedecin(m);
 
+            // Mutuelle
             Mutuelle mu = new Mutuelle();
             mu.setIdMutuelle(rs.getInt("id_Mutuelle"));
             mu.setNomMutuelle(rs.getString("nomMutuelle") != null ? rs.getString("nomMutuelle") : "");
@@ -90,21 +94,14 @@ public class ClientDAO extends AbstractDAO<Client> {
             pst.setString(8, c.getNss());
             pst.setDate(9, Date.valueOf(c.getDateNaissance()));
 
-            // ---- Sécurisation des champs null ----
-            if (c.getRegime() != null)
-                pst.setInt(10, c.getRegime().getIdRegime());
-            else
-                pst.setNull(10, java.sql.Types.INTEGER);
+            if (c.getRegime() != null) pst.setInt(10, c.getRegime().getIdRegime());
+            else pst.setNull(10, java.sql.Types.INTEGER);
 
-            if (c.getMedecin() != null)
-                pst.setInt(11, c.getMedecin().getIdMedecin());
-            else
-                pst.setNull(11, java.sql.Types.INTEGER);
+            if (c.getMedecin() != null) pst.setInt(11, c.getMedecin().getIdMedecin());
+            else pst.setNull(11, java.sql.Types.INTEGER);
 
-            if (c.getMutuelle() != null)
-                pst.setInt(12, c.getMutuelle().getIdMutuelle());
-            else
-                pst.setNull(12, java.sql.Types.INTEGER);
+            if (c.getMutuelle() != null) pst.setInt(12, c.getMutuelle().getIdMutuelle());
+            else pst.setNull(12, java.sql.Types.INTEGER);
 
             pst.setString(13, c.getIdTitulaireMutuelle());
 
@@ -133,9 +130,16 @@ public class ClientDAO extends AbstractDAO<Client> {
             pst.setString(7, c.getEmail());
             pst.setString(8, c.getNss());
             pst.setDate(9, Date.valueOf(c.getDateNaissance()));
-            pst.setInt(10, c.getRegime().getIdRegime());
-            pst.setInt(11, c.getMedecin().getIdMedecin());
-            pst.setInt(12, c.getMutuelle().getIdMutuelle());
+
+            if (c.getRegime() != null) pst.setInt(10, c.getRegime().getIdRegime());
+            else pst.setNull(10, java.sql.Types.INTEGER);
+
+            if (c.getMedecin() != null) pst.setInt(11, c.getMedecin().getIdMedecin());
+            else pst.setNull(11, java.sql.Types.INTEGER);
+
+            if (c.getMutuelle() != null) pst.setInt(12, c.getMutuelle().getIdMutuelle());
+            else pst.setNull(12, java.sql.Types.INTEGER);
+
             pst.setString(13, c.getIdTitulaireMutuelle());
             pst.setInt(14, c.getIdClient());
             return pst;
@@ -149,7 +153,7 @@ public class ClientDAO extends AbstractDAO<Client> {
         String sql = "SELECT " +
                 "c.id_Client, c.nomClient, c.prenomClient, c.adresseClient, c.codePostalClient, c.villeClient, " +
                 "c.telephoneClient, c.mailClient, c.nssClient, c.dateNaissance, c.id_Regime, c.id_Medecin, c.id_Mutuelle, c.idTitulaireMutuelle, " +
-                "r.nomRegime AS nomRegime, m.nomMedecin AS nomMedecin, mu.nomMutuelle AS nomMutuelle " +
+                "r.nomRegime AS nomRegime, m.nomMedecin AS nomMedecin, m.prenomMedecin AS prenomMedecin, mu.nomMutuelle AS nomMutuelle " +
                 "FROM Client c " +
                 "LEFT JOIN Medecin m ON c.id_Medecin = m.id_Medecin " +
                 "LEFT JOIN Regime r ON c.id_Regime = r.id_Regime " +
@@ -172,7 +176,7 @@ public class ClientDAO extends AbstractDAO<Client> {
         String sql = "SELECT " +
                 "c.id_Client, c.nomClient, c.prenomClient, c.adresseClient, c.codePostalClient, c.villeClient, " +
                 "c.telephoneClient, c.mailClient, c.nssClient, c.dateNaissance, c.id_Regime, c.id_Medecin, c.id_Mutuelle, c.idTitulaireMutuelle, " +
-                "r.nomRegime AS nomRegime, m.nomMedecin AS nomMedecin, mu.nomMutuelle AS nomMutuelle " +
+                "r.nomRegime AS nomRegime, m.nomMedecin AS nomMedecin, m.prenomMedecin AS prenomMedecin, mu.nomMutuelle AS nomMutuelle " +
                 "FROM Client c " +
                 "LEFT JOIN Medecin m ON c.id_Medecin = m.id_Medecin " +
                 "LEFT JOIN Regime r ON c.id_Regime = r.id_Regime " +
@@ -197,7 +201,7 @@ public class ClientDAO extends AbstractDAO<Client> {
         String sql = "SELECT " +
                 "c.id_Client, c.nomClient, c.prenomClient, c.adresseClient, c.codePostalClient, c.villeClient, " +
                 "c.telephoneClient, c.mailClient, c.nssClient, c.dateNaissance, c.id_Regime, c.id_Medecin, c.id_Mutuelle, c.idTitulaireMutuelle, " +
-                "r.nomRegime AS nomRegime, m.nomMedecin AS nomMedecin, mu.nomMutuelle AS nomMutuelle " +
+                "r.nomRegime AS nomRegime, m.nomMedecin AS nomMedecin, m.prenomMedecin AS prenomMedecin, mu.nomMutuelle AS nomMutuelle " +
                 "FROM Client c " +
                 "LEFT JOIN Medecin m ON c.id_Medecin = m.id_Medecin " +
                 "LEFT JOIN Regime r ON c.id_Regime = r.id_Regime " +
@@ -220,7 +224,7 @@ public class ClientDAO extends AbstractDAO<Client> {
         String sql = "SELECT " +
                 "c.id_Client, c.nomClient, c.prenomClient, c.adresseClient, c.codePostalClient, c.villeClient, " +
                 "c.telephoneClient, c.mailClient, c.nssClient, c.dateNaissance, c.id_Regime, c.id_Medecin, c.id_Mutuelle, c.idTitulaireMutuelle, " +
-                "r.nomRegime AS nomRegime, m.nomMedecin AS nomMedecin, mu.nomMutuelle AS nomMutuelle " +
+                "r.nomRegime AS nomRegime, m.nomMedecin AS nomMedecin, m.prenomMedecin AS prenomMedecin, mu.nomMutuelle AS nomMutuelle " +
                 "FROM Client c " +
                 "LEFT JOIN Medecin m ON c.id_Medecin = m.id_Medecin " +
                 "LEFT JOIN Regime r ON c.id_Regime = r.id_Regime " +
