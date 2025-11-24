@@ -4,9 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RegexValidator {
-
     private static final Logger logger = LoggerFactory.getLogger(RegexValidator.class);
-
     public static final String REGEX_MOTS = "^[A-Za-zÀ-ÿ]+(?:[ \\-][A-Za-zÀ-ÿ]+)*$";
     public static final String REGEX_NSS = "^[12]\\d{2}(0[1-9]|1[0-2])\\d{5}\\d{2}$";
     public static final String REGEX_DATE_NAISSANCE = "^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/\\d{4}$";
@@ -21,7 +19,7 @@ public class RegexValidator {
         try {
             return nom != null && !nom.trim().isEmpty() && nom.matches(REGEX_MOTS);
         } catch (Exception e) {
-            logger.error("Erreur lors de la validation du mot : " + nom, e);
+            logger.warn("Erreur lors de la validation du mot : " + nom, e);
             return false;
         }
     }
@@ -30,7 +28,7 @@ public class RegexValidator {
         try {
             return nss != null && nss.matches(REGEX_NSS);
         } catch (Exception e) {
-            logger.error("Erreur lors de la validation du NSS : " + nss, e);
+            logger.warn("Erreur lors de la validation du NSS : " + nss, e);
             return false;
         }
     }
@@ -39,7 +37,7 @@ public class RegexValidator {
         try {
             return date != null && date.matches(REGEX_DATE_NAISSANCE);
         } catch (Exception e) {
-            logger.error("Erreur lors de la validation de la date de naissance : " + date, e);
+            logger.warn("Erreur lors de la validation de la date de naissance : " + date, e);
             return false;
         }
     }
@@ -48,7 +46,7 @@ public class RegexValidator {
         try {
             return email != null && email.trim().length() >= 2 && email.matches(REGEX_EMAIL);
         } catch (Exception e) {
-            logger.error("Erreur lors de la validation de l'email : " + email, e);
+            logger.warn("Erreur lors de la validation de l'email : " + email, e);
             return false;
         }
     }
@@ -57,7 +55,7 @@ public class RegexValidator {
         try {
             return codePostal != null && codePostal.trim().length() == 5 && codePostal.matches(REGEX_CODE_POSTAL);
         } catch (Exception e) {
-            logger.error("Erreur lors de la validation du code postal : " + codePostal, e);
+            logger.warn("Erreur lors de la validation du code postal : " + codePostal, e);
             return false;
         }
     }
@@ -66,7 +64,7 @@ public class RegexValidator {
         try {
             return telephone != null && telephone.trim().length() >= 10 && telephone.matches(REGEX_TELEPHONE);
         } catch (Exception e) {
-            logger.error("Erreur lors de la validation du téléphone : " + telephone, e);
+            logger.warn("Erreur lors de la validation du téléphone : " + telephone, e);
             return false;
         }
     }
@@ -75,7 +73,7 @@ public class RegexValidator {
         try {
             return adresse != null && !adresse.trim().isEmpty() && adresse.matches(REGEX_ADRESSE);
         } catch (Exception e) {
-            logger.error("Erreur lors de la validation de l'adresse : " + adresse, e);
+            logger.warn("Erreur lors de la validation de l'adresse : " + adresse, e);
             return false;
         }
     }
@@ -84,7 +82,7 @@ public class RegexValidator {
         try {
             return ville != null && !ville.trim().isEmpty() && ville.matches(REGEX_VILLE);
         } catch (Exception e) {
-            logger.error("Erreur lors de la validation de la ville : " + ville, e);
+            logger.warn("Erreur lors de la validation de la ville : " + ville, e);
             return false;
         }
     }
@@ -93,7 +91,7 @@ public class RegexValidator {
         try {
             return rpps != null && rpps.trim().length() == 11 && rpps.matches(REGEX_RPPS);
         } catch (Exception e) {
-            logger.error("Erreur lors de la validation du RPPS : " + rpps, e);
+            logger.warn("Erreur lors de la validation du RPPS : " + rpps, e);
             return false;
         }
     }
@@ -102,7 +100,7 @@ public class RegexValidator {
         try {
             return nom != null && nom.trim().length() >= 3 && nom.matches(REGEX_MOTS);
         } catch (Exception e) {
-            logger.error("Erreur lors de la validation du nom de médicament : " + nom, e);
+            logger.warn("Erreur lors de la validation du nom de médicament : " + nom, e);
             return false;
         }
     }
@@ -111,7 +109,7 @@ public class RegexValidator {
         try {
             return categorie != null && categorie.trim().length() >= 3 && categorie.matches(REGEX_MOTS);
         } catch (Exception e) {
-            logger.error("Erreur lors de la validation de la catégorie du médicament : " + categorie, e);
+            logger.warn("Erreur lors de la validation de la catégorie du médicament : " + categorie, e);
             return false;
         }
     }
@@ -120,24 +118,44 @@ public class RegexValidator {
         try {
             return departement != null && !departement.trim().isEmpty() && departement.matches(REGEX_MOTS);
         } catch (Exception e) {
-            logger.error("Erreur lors de la validation du département : " + departement, e);
+            logger.warn("Erreur lors de la validation du département : " + departement, e);
             return false;
         }
     }
 
     public static boolean validerTauxRemboursement(double taux) {
-        return taux >= 0 && taux <= 100;
+        try {
+            return taux >= 0 && taux <= 100;
+        } catch (Exception e) {
+            logger.warn("Erreur lors de la validation du taux de remboursement : " + taux, e);
+            return false;
+        }
     }
 
     public static boolean validerPrix(double prix) {
-        return prix >= 0;
+        try {
+            return prix >= 0;
+        } catch (Exception e) {
+            logger.warn("Erreur lors de la validation du prix : " + prix, e);
+            return false;
+        }
     }
 
     public static boolean validerQuantite(int quantite) {
-        return quantite >= 0;
+        try {
+            return quantite >= 0;
+        } catch (Exception e) {
+            logger.warn("Erreur lors de la validation de la quantité : " + quantite, e);
+            return false;
+        }
     }
 
     public static boolean validerSansOrdonnance(String value) {
-        return "oui".equalsIgnoreCase(value) || "non".equalsIgnoreCase(value);
+        try {
+            return "oui".equalsIgnoreCase(value) || "non".equalsIgnoreCase(value);
+        } catch (Exception e) {
+            logger.warn("Erreur lors de la validation de la valeur 'sans ordonnance' : " + value, e);
+            return false;
+        }
     }
 }

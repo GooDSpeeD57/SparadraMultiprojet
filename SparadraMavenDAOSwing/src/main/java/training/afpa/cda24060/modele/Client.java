@@ -1,6 +1,9 @@
 package training.afpa.cda24060.modele;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import training.afpa.cda24060.exception.SaisieException;
+import training.afpa.cda24060.utilitaires.LogUtils;
 import training.afpa.cda24060.utilitaires.RegexValidator;
 
 import java.time.LocalDate;
@@ -8,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 public class Client extends Personne {
-
+    private static final Logger logger = LoggerFactory.getLogger(Client.class);
     private int idClient;
     private String nss;
     private LocalDate dateNaissance;
@@ -16,7 +19,6 @@ public class Client extends Personne {
     private Medecin medecin;
     private Mutuelle mutuelle;
     private String idTitulaireMutuelle;
-
     private static final DateTimeFormatter FORMAT_DATE = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public Client() {
@@ -29,7 +31,7 @@ public class Client extends Personne {
                   String idTitulaireMutuelle) throws SaisieException {
         super(nom, prenom, adresse, codePostal, ville, telephone, email);
         this.setNss(nss);
-        this.setDateNaissance(dateNaissance);  // Utilisation du setter
+        this.setDateNaissance(dateNaissance);
         this.setRegime(regime);
         this.setMedecin(medecin);
         this.setMutuelle(mutuelle);
@@ -50,7 +52,9 @@ public class Client extends Personne {
 
     public void setNss(String nss) throws SaisieException {
         if (!RegexValidator.validerNSS(nss)) {
-            throw new SaisieException("Numéro de Sécurité Sociale incorrect ! 12 chiffres attendus.");
+            String message = "Numéro de Sécurité Sociale incorrect ! 12 chiffres attendus.";
+            LogUtils.warn(logger, message);
+            throw new SaisieException(message);
         }
         this.nss = nss;
     }
@@ -61,12 +65,16 @@ public class Client extends Personne {
 
     public void setDateNaissance(String dateNaissance) throws SaisieException {
         if (!RegexValidator.validerDateNaissance(dateNaissance)) {
-            throw new SaisieException("Format de date incorrect ! Format attendu : Jour/Mois/Année.");
+            String message = "Format de date incorrect ! Format attendu : Jour/Mois/Année.";
+            LogUtils.error(logger, message);
+            throw new SaisieException(message);
         }
         try {
             this.dateNaissance = LocalDate.parse(dateNaissance, FORMAT_DATE);
         } catch (DateTimeParseException e) {
-            throw new SaisieException("Impossible de parser la date de naissance.");
+            String message = "Impossible de convertir la date de naissance : " + dateNaissance;
+            LogUtils.error(logger, message, e);
+            throw new SaisieException(message);
         }
     }
 
@@ -75,6 +83,9 @@ public class Client extends Personne {
     }
 
     public void setRegime(Regime regime) {
+        if (regime == null) {
+            LogUtils.warn(logger, "Régime non défini pour le client.");
+        }
         this.regime = regime;
     }
 
@@ -83,6 +94,9 @@ public class Client extends Personne {
     }
 
     public void setMedecin(Medecin medecin) {
+        if (medecin == null) {
+            LogUtils.warn(logger, "Médecin non défini pour le client.");
+        }
         this.medecin = medecin;
     }
 
@@ -91,6 +105,9 @@ public class Client extends Personne {
     }
 
     public void setMutuelle(Mutuelle mutuelle) {
+        if (mutuelle == null) {
+            LogUtils.warn(logger, "Mutuelle non définie pour le client.");
+        }
         this.mutuelle = mutuelle;
     }
 
@@ -99,6 +116,9 @@ public class Client extends Personne {
     }
 
     public void setIdTitulaireMutuelle(String idTitulaireMutuelle) {
+        if (idTitulaireMutuelle == null) {
+            LogUtils.warn(logger, "ID titulaire de la mutuelle non défini pour le client.");
+        }
         this.idTitulaireMutuelle = idTitulaireMutuelle;
     }
 
@@ -106,7 +126,7 @@ public class Client extends Personne {
     public String toString() {
         return super.toString()
                 + "\nID Client                  : " + idClient
-                + "\nNuméro de Sécurité Sociale : " + nss
+                + "\nNuméro de Sécurité Sociale : " + (nss != null ? nss : "Non défini")
                 + "\nDate de Naissance          : " + (dateNaissance != null ? dateNaissance.format(FORMAT_DATE) : "Non défini")
                 + "\nRégime                     : " + (regime != null ? regime.getNomRegime() : "Non défini")
                 + "\nMutuelle                   : " + (mutuelle != null ? mutuelle.getNomMutuelle() : "Non défini")

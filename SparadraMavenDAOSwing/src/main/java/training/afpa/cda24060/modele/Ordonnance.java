@@ -20,7 +20,6 @@ public class Ordonnance {
     private List<Prescription> prescriptions;
     private LocalDate dateOrdonnance;
 
-    // ===================== Constructeurs =====================
     public Ordonnance() {
         prescriptions = new ArrayList<>();
     }
@@ -33,7 +32,6 @@ public class Ordonnance {
         setDateOrdonnance(dateOrdonnance);
     }
 
-    // ===================== Getters / Setters =====================
     public int getId_Ordonnance() {
         return id_Ordonnance;
     }
@@ -48,7 +46,7 @@ public class Ordonnance {
 
     public void setMedecin(Medecin medecin) {
         if (medecin == null) {
-            LogUtils.error(logger, "Médecin nul dans Ordonnance", null);
+            LogUtils.error(logger, "Médecin nul dans Ordonnance");
         }
         this.medecin = medecin;
     }
@@ -59,7 +57,7 @@ public class Ordonnance {
 
     public void setClient(Client client) {
         if (client == null) {
-            LogUtils.error(logger, "Client nul dans Ordonnance", null);
+            LogUtils.error(logger, "Client nul dans Ordonnance");
         }
         this.client = client;
     }
@@ -70,7 +68,7 @@ public class Ordonnance {
 
     public void setPrescriptions(List<Prescription> prescriptions) {
         if (prescriptions == null) {
-            LogUtils.error(logger, "Liste de prescriptions nulle dans Ordonnance", null);
+            LogUtils.error(logger, "Liste de prescriptions nulle dans Ordonnance");
             this.prescriptions = new ArrayList<>();
         } else {
             this.prescriptions = new ArrayList<>(prescriptions);
@@ -83,7 +81,7 @@ public class Ordonnance {
 
     public void setDateOrdonnance(LocalDate dateOrdonnance) {
         if (dateOrdonnance == null) {
-            LogUtils.error(logger, "Date de l'ordonnance nulle", null);
+            LogUtils.error(logger, "Date de l'ordonnance nulle");
         }
         this.dateOrdonnance = dateOrdonnance;
     }

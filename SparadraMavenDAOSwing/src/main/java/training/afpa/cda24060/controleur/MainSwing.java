@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import training.afpa.cda24060.vue.PanelSwing.*;
 
 public class MainSwing extends JFrame {
@@ -43,7 +42,6 @@ public class MainSwing extends JFrame {
         tabbedPane = new JTabbedPane();
         tabbedPane.setFont(new Font("Arial", Font.BOLD, 12));
 
-        // Panels avec DAO
         panelAccueil = new PanelAccueil();
         panelClient = new PanelClient();
         panelMedecin = new PanelMedecin();
@@ -83,18 +81,17 @@ public class MainSwing extends JFrame {
         );
 
         menuAide.add(itemAPropos);
-
         menuBar.add(menuFichier);
         menuBar.add(menuAide);
         setJMenuBar(menuBar);
     }
 
     private void chargerDonneesDansGUI() {
-        panelClient.chargerClients();          // --> Appelle ClientDAO
-        panelMedecin.chargerMedecins();        // --> Appelle MedecinDAO
-        panelMutuelle.chargerMutuelles();      // --> Appelle MutuelleDAO
-        panelMedicament.chargerMedicaments();  // --> Appelle MedicamentDAO
-        panelOrdonnance.chargerOrdonnances();  // --> Appelle OrdonnanceDAO
+        panelClient.chargerClients();
+        panelMedecin.chargerMedecins();
+        panelMutuelle.chargerMutuelles();
+        panelMedicament.chargerMedicaments();
+        panelOrdonnance.chargerOrdonnances();
         panelHistorique.chargerHistorique();
         panelAccueil.actualiserStatistiques();
     }

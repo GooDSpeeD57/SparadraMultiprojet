@@ -6,6 +6,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import training.afpa.cda24060.ClasseDAO.ClientDAO;
 import training.afpa.cda24060.exception.SaisieException;
@@ -16,6 +17,7 @@ import training.afpa.cda24060.modele.Regime;
 
 public class PanelClient extends JPanel {
 
+    private static final DateTimeFormatter FORMAT_FR = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private final ClientDAO clientDAO = new ClientDAO();
 
     private JTable tableClient;
@@ -288,7 +290,9 @@ public class PanelClient extends JPanel {
                     client.getTelephone(),
                     client.getEmail(),
                     client.getNss(),
-                    client.getDateNaissance()
+                    client.getDateNaissance() != null
+                            ? client.getDateNaissance().format(FORMAT_FR)
+                            : ""
             });
         }
     }
@@ -307,7 +311,9 @@ public class PanelClient extends JPanel {
                 txtTelephoneClient.setText(c.getTelephone());
                 txtEmailClient.setText(c.getEmail());
                 txtNssClient.setText(c.getNss());
-                txtDateNaissanceClient.setText(c.getDateNaissance().toString());
+                txtDateNaissanceClient.setText(
+                        c.getDateNaissance() != null ? c.getDateNaissance().format(FORMAT_FR) : ""
+                );
                 txtIdTitulaireClient.setText(c.getIdTitulaireMutuelle());
 
                 if (c.getRegime() != null) {
