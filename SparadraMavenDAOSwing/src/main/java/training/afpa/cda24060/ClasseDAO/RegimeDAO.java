@@ -13,7 +13,7 @@ public class RegimeDAO extends AbstractDAO<Regime> {
 
     @Override
     protected String getTableName() {
-        return "regime";
+        return "Regime";
     }
 
     @Override

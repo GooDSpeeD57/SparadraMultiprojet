@@ -332,7 +332,7 @@ public class PanelOrdonnance extends JPanel {
 
             try {
                 int quantite = Integer.parseInt(input);
-                if (quantite <= 0) {
+                if (quantite <=0) {
                     JOptionPane.showMessageDialog(parent, "La quantité doit être supérieure à 0.", "Erreur", JOptionPane.ERROR_MESSAGE);
                 } else if (quantite > medicament.getQuantiteMedicament()) {
                     JOptionPane.showMessageDialog(parent, "Quantité supérieure au stock disponible.", "Erreur", JOptionPane.ERROR_MESSAGE);

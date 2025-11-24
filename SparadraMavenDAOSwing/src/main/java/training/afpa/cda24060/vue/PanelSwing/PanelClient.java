@@ -143,7 +143,7 @@ public class PanelClient extends JPanel {
         modelClient = new DefaultTableModel(colonnes, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return true;
+                return false;
             }
         };
         tableClient = new JTable(modelClient);
@@ -183,7 +183,6 @@ public class PanelClient extends JPanel {
             client.setDateNaissance(txtDateNaissanceClient.getText().trim());
             client.setIdTitulaireMutuelle(txtIdTitulaireClient.getText().trim());
 
-            // -------- Ajout des champs Regime / Medecin / Mutuelle ----------
             if (!txtIdRegimeClient.getText().trim().isEmpty()) {
                 Regime r = new Regime();
                 r.setIdRegime(Integer.parseInt(txtIdRegimeClient.getText().trim()));

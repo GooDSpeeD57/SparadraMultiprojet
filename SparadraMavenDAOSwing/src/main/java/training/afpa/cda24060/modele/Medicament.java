@@ -119,7 +119,7 @@ public class Medicament {
     }
 
     public void setQuantiteMedicament(int quantiteMedicament) throws SaisieException {
-        if (quantiteMedicament <= 0) {
+        if (quantiteMedicament < 0) {
             String message = "Le stock doit être supérieur à 0 : " + quantiteMedicament;
             LogUtils.warn(logger, message);
             throw new SaisieException(message);

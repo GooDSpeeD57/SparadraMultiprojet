@@ -13,7 +13,7 @@ public class MedecinDAO extends AbstractDAO<Medecin> {
 
     @Override
     protected String getTableName() {
-        return "medecin";
+        return "Medecin";
     }
 
     @Override

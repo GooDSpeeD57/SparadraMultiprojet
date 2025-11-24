@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
+import training.afpa.cda24060.Connection.DCSingletonHikaricp;
 import training.afpa.cda24060.vue.PanelSwing.*;
 
 public class MainSwing extends JFrame {
@@ -58,6 +60,26 @@ public class MainSwing extends JFrame {
         tabbedPane.addTab("Ordonnances", panelOrdonnance);
         tabbedPane.addTab("Historique", panelHistorique);
 
+        tabbedPane.addChangeListener(e -> {
+            Component selected = tabbedPane.getSelectedComponent();
+
+            if (selected == panelClient) {
+                panelClient.chargerClients();
+            } else if (selected == panelMedecin) {
+                panelMedecin.chargerMedecins();
+            } else if (selected == panelMutuelle) {
+                panelMutuelle.chargerMutuelles();
+            } else if (selected == panelMedicament) {
+                panelMedicament.chargerMedicaments();
+            } else if (selected == panelOrdonnance) {
+                panelOrdonnance.chargerOrdonnances();
+            } else if (selected == panelHistorique) {
+                panelHistorique.chargerHistorique();
+            } else if (selected == panelAccueil) {
+                panelAccueil.actualiserStatistiques();
+            }
+        });
+
         add(tabbedPane);
     }
 
@@ -103,6 +125,7 @@ public class MainSwing extends JFrame {
                 JOptionPane.YES_NO_OPTION);
 
         if (choix == JOptionPane.YES_OPTION) {
+            DCSingletonHikaricp.closePool();
             System.exit(0);
         }
     }

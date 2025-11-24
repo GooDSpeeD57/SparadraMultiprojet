@@ -11,7 +11,7 @@ public class RegexValidator {
     public static final String REGEX_EMAIL = "^((?!\\.)[\\w\\-_.]*[^.])(@\\w+)(\\.\\w+(\\.\\w+)?[^.\\W])$";
     public static final String REGEX_CODE_POSTAL = "\\d{5}";
     public static final String REGEX_TELEPHONE = "^(?:\\+33\\s?[1-9](?:\\s?\\d{2}){4}|0[1-9](?:\\s?\\d{2}){4})$";
-    public static final String REGEX_ADRESSE = "^(n°\\s*)?(\\d{1,4})(\\s*([Bb]is|[Tt]er|[a-gA-G]))?\\s+([Rr]ue|[Aa]venue|[Gg]rand|av|[Bb]oulevard|bd|[Cc]hemin|[Aa]llée?|[Ii]mpasse|[Rr]oute|[Pp]lace|pl)\\s+([\\p{L}][\\p{L}0-9'\\-\\s]*[\\p{L}0-9])$";
+    public static final String REGEX_ADRESSE = "^(n°\\s*)?(\\d{1,4})(\\s*([Bb]is|[Tt]er|[a-gA-G]))?\\s+([Rr]ue|[Aa]venue|[Gg]rand|av|[Bb]oulevard|bd|[Cc]hemin|[Aa]ll[ée]e?|[Ii]mpasse|[Rr]oute|[Pp]lace|pl)\\s+([\\p{L}][\\p{L}0-9'\\-\\s]*[\\p{L}0-9])$";
     public static final String REGEX_VILLE = "^[\\p{L}][\\p{L} \\-']*$";
     public static final String REGEX_RPPS = "^10\\d{9}$";
 

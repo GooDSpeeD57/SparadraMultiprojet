@@ -30,7 +30,7 @@ public class PharmacienDAO extends AbstractDAO<Pharmacien> {
 
     @Override
     protected PreparedStatement prepareInsert(Pharmacien p, Connection conn) throws Exception {
-        String sql = "INSERT INTO pharmacien (nomPharmacien, prenomPharmacien, rPPSPharmacien) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO pharmacien (nomPharmacien, prenomPharmacien, rppsPharmacien) VALUES (?, ?, ?)";
         PreparedStatement pst = conn.prepareStatement(sql);
         pst.setString(1, p.getNom());
         pst.setString(2, p.getPrenom());
