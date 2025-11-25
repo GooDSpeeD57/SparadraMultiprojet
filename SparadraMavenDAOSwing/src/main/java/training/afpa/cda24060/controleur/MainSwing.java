@@ -11,7 +11,6 @@ public class MainSwing extends JFrame {
 
     private JTabbedPane tabbedPane;
 
-    // Panels
     private PanelAccueil panelAccueil;
     private PanelClient panelClient;
     private PanelMedecin panelMedecin;
@@ -22,7 +21,7 @@ public class MainSwing extends JFrame {
 
     public MainSwing() {
         initComponents();
-        chargerDonneesDansGUI();
+        SwingUtilities.invokeLater(this::chargerDonneesPremierChargement);
     }
 
     private void initComponents() {
@@ -43,7 +42,7 @@ public class MainSwing extends JFrame {
         tabbedPane = new JTabbedPane();
         tabbedPane.setFont(new Font("Arial", Font.BOLD, 12));
 
-        // Panels avec DAO
+        // Panels EXACTEMENT comme tu les construisais avant
         panelAccueil = new PanelAccueil();
         panelClient = new PanelClient();
         panelMedecin = new PanelMedecin();
@@ -52,6 +51,7 @@ public class MainSwing extends JFrame {
         panelOrdonnance = new PanelOrdonnance(this);
         panelHistorique = new PanelHistorique();
 
+        // Ajout des onglets
         tabbedPane.addTab("Accueil", panelAccueil);
         tabbedPane.addTab("Clients", panelClient);
         tabbedPane.addTab("Médecins", panelMedecin);
@@ -59,6 +59,11 @@ public class MainSwing extends JFrame {
         tabbedPane.addTab("Médicaments", panelMedicament);
         tabbedPane.addTab("Ordonnances", panelOrdonnance);
         tabbedPane.addTab("Historique", panelHistorique);
+
+        // Charger donnés SEULEMENT lorsque l'onglet change
+        tabbedPane.addChangeListener(e ->
+                chargerOnglet(tabbedPane.getSelectedIndex())
+        );
 
         add(tabbedPane);
     }
@@ -70,42 +75,63 @@ public class MainSwing extends JFrame {
         JMenuItem itemQuitter = new JMenuItem("Quitter");
 
         itemQuitter.addActionListener(e -> quitter());
-
         menuFichier.add(itemQuitter);
 
         JMenu menuAide = new JMenu("Aide");
         JMenuItem itemAPropos = new JMenuItem("À propos");
         itemAPropos.addActionListener(e ->
                 JOptionPane.showMessageDialog(this,
-                        "Système de Gestion de Pharmacie\nVersion 1.0\n\nDéveloppé avec Java Swing par Julien Taesch",
+                        "Système de Gestion de Pharmacie\nVersion 1.0\n\nDéveloppé par Julien Taesch",
                         "À propos",
                         JOptionPane.INFORMATION_MESSAGE)
         );
-
         menuAide.add(itemAPropos);
 
         menuBar.add(menuFichier);
         menuBar.add(menuAide);
+
         setJMenuBar(menuBar);
     }
 
-    private void chargerDonneesDansGUI() {
-        panelClient.chargerClients();          // --> Appelle ClientDAO
-        panelMedecin.chargerMedecins();        // --> Appelle MedecinDAO
-        panelMutuelle.chargerMutuelles();      // --> Appelle MutuelleDAO
-        panelMedicament.chargerMedicaments();  // --> Appelle MedicamentDAO
-        panelOrdonnance.chargerOrdonnances();  // --> Appelle OrdonnanceDAO
-        panelHistorique.chargerHistorique();
-        panelAccueil.actualiserStatistiques();
+    // --- Chargement dynamique des panels ---
+
+    private void chargerDonneesPremierChargement() {
+        chargerOnglet(0);  // Charger l'accueil seulement
+    }
+
+    private void chargerOnglet(int index) {
+        switch (index) {
+            case 0 -> panelAccueil.actualiserStatistiques();
+            case 1 -> chargerAsync(panelClient::chargerClients);
+            case 2 -> chargerAsync(panelMedecin::chargerMedecins);
+            case 3 -> chargerAsync(panelMutuelle::chargerMutuelles);
+            case 4 -> chargerAsync(panelMedicament::chargerMedicaments);
+            case 5 -> chargerAsync(panelOrdonnance::chargerOrdonnances);
+            case 6 -> chargerAsync(panelHistorique::chargerHistorique);
+        }
+    }
+
+    // SwingWorker = pas de freeze
+    private void chargerAsync(Runnable task) {
+        new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() {
+                task.run();
+                return null;
+            }
+        }.execute();
     }
 
     private void quitter() {
-        int choix = JOptionPane.showConfirmDialog(this,
+        int choix = JOptionPane.showConfirmDialog(
+                this,
                 "Voulez-vous quitter l'application ?",
                 "Confirmation",
-                JOptionPane.YES_NO_OPTION);
+                JOptionPane.YES_NO_OPTION
+        );
 
         if (choix == JOptionPane.YES_OPTION) {
+            dispose();
             System.exit(0);
         }
     }

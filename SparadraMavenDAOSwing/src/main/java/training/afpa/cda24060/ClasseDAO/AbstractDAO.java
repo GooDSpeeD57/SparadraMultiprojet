@@ -12,13 +12,10 @@ public abstract class AbstractDAO<T> {
 
     protected abstract String getTableName();
     protected abstract String getPrimaryKey();
-    protected abstract T map(ResultSet rs) throws Exception;
     protected abstract PreparedStatement prepareInsert(T obj, Connection conn) throws Exception;
     protected abstract PreparedStatement prepareUpdate(T obj, Connection conn) throws Exception;
 
-    // ======================================================
-    //  CRUD GÉNÉRIQUE
-    // ======================================================
+
 
     public boolean insert(T obj) {
         try (Connection conn = DCSingletonHikaricp.getConnection();
@@ -61,46 +58,29 @@ public abstract class AbstractDAO<T> {
         }
     }
 
-    public T findById(int id) {
+
+    public ResultSet findById(int id) {
         String sql = "SELECT * FROM " + getTableName() + " WHERE " + getPrimaryKey() + "=?";
-
-        try (Connection conn = DCSingletonHikaricp.getConnection();
-             PreparedStatement pst = conn.prepareStatement(sql)) {
-
+        try {
+            Connection conn = DCSingletonHikaricp.getConnection();
+            PreparedStatement pst = conn.prepareStatement(sql);
             pst.setInt(1, id);
-            try (ResultSet rs = pst.executeQuery()) {
-                if (rs.next()) {
-                    return map(rs);
-                }
-            }
-
+            return pst.executeQuery();
         } catch (Exception e) {
-            System.err.println("Erreur findById dans " + getTableName() + " : " + e.getMessage());
+            System.err.println("Erreur findByIdRaw dans " + getTableName() + " : " + e.getMessage());
         }
-
         return null;
     }
 
-    public List<T> findAll() {
-        List<T> list = new ArrayList<>();
+    public ResultSet findAll() {
         String sql = "SELECT * FROM " + getTableName();
-
-        try (Connection conn = DCSingletonHikaricp.getConnection();
-             PreparedStatement pst = conn.prepareStatement(sql);
-             ResultSet rs = pst.executeQuery()) {
-
-            while (rs.next()) {
-                try {
-                    list.add(map(rs));
-                } catch (Exception e) {
-                    System.err.println("Erreur mapping dans " + getTableName() + " : " + e.getMessage());
-                }
-            }
-
+        try {
+            Connection conn = DCSingletonHikaricp.getConnection();
+            PreparedStatement pst = conn.prepareStatement(sql);
+            return pst.executeQuery();
         } catch (Exception e) {
-            System.err.println("Erreur findAll dans " + getTableName() + " : " + e.getMessage());
+            System.err.println("Erreur findAllRaw dans " + getTableName() + " : " + e.getMessage());
         }
-
-        return list;
+        return null;
     }
 }
