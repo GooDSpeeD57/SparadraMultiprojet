@@ -22,9 +22,9 @@ public class Client extends Personne {
     private Mutuelle mutuelle;
     private String idTitulaireMutuelle;
 
-    // Format de date cohérent pour tout le projet
+
     private static final DateTimeFormatter FORMAT_DATE =
-            DateTimeFormatter.ofPattern("dd/MM/uuuu");
+            DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public Client() {
         super();
@@ -70,16 +70,10 @@ public class Client extends Personne {
         return dateNaissance;
     }
 
-    /**
-     * Getter formaté (pour affichages, PDF, logs, écrans, API...)
-     */
-    public String getDateNaissanceFormatee() {
+    public String getDateNaissanceFormate() {
         return dateNaissance != null ? dateNaissance.format(FORMAT_DATE) : "";
     }
 
-    /**
-     * Setter de date avec regex + parse
-     */
     public void setDateNaissance(String dateNaissance) throws SaisieException {
 
         if (!RegexValidator.validerDateNaissance(dateNaissance)) {
@@ -146,7 +140,7 @@ public class Client extends Personne {
         return super.toString()
                 + "\nID Client                  : " + idClient
                 + "\nNuméro de Sécurité Sociale : " + (nss != null ? nss : "Non défini")
-                + "\nDate de Naissance          : " + getDateNaissanceFormatee()
+                + "\nDate de Naissance          : " + getDateNaissanceFormate()
                 + "\nRégime                     : " + (regime != null ? regime.getNomRegime() : "Non défini")
                 + "\nMutuelle                   : " + (mutuelle != null ? mutuelle.getNomMutuelle() : "Non défini")
                 + "\nMédecin Référent           : " + (medecin != null ? medecin.getNom() : "Non défini")

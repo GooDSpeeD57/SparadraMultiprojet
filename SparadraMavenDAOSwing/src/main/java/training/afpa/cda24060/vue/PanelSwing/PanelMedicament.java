@@ -26,7 +26,7 @@ public class PanelMedicament extends JPanel {
     private JComboBox<String> cbSansOrdonnanceMedicament;
     private JTextField txtRechercheNomMedicament, txtRechercheCategorieMedicament;
 
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private final MedicamentDAO medicamentDAO = new MedicamentDAO();
 
     public PanelMedicament() {

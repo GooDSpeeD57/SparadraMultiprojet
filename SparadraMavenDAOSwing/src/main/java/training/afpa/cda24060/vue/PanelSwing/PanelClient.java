@@ -8,7 +8,6 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.time.LocalDate;
 import java.util.List;
 
 import training.afpa.cda24060.ClasseDAO.ClientDAO;
@@ -17,7 +16,7 @@ import training.afpa.cda24060.modele.Client;
 import training.afpa.cda24060.modele.Medecin;
 import training.afpa.cda24060.modele.Mutuelle;
 import training.afpa.cda24060.modele.Regime;
-import training.afpa.cda24060.utilitaires.DateTimePaternFr;
+import training.afpa.cda24060.utilitaires.DateTimePatternFr;
 
 public class PanelClient extends JPanel {
 
@@ -38,7 +37,6 @@ public class PanelClient extends JPanel {
         initComponents();
     }
 
-    // ===================== INIT COMPONENTS =====================
     private void initComponents() {
         setLayout(new BorderLayout());
 
@@ -59,7 +57,6 @@ public class PanelClient extends JPanel {
         chargerClients();
     }
 
-    // ===================== PANEL SAISIE =====================
     private JPanel creerPanelSaisie() {
         JPanel panelSaisieClient = new JPanel(new GridBagLayout());
         panelSaisieClient.setBorder(new TitledBorder("Nouveau Client"));
@@ -121,14 +118,12 @@ public class PanelClient extends JPanel {
         panelSaisieClient.add(panelBoutons, gbc);
     }
 
-    // ===================== PANEL RECHERCHE =====================
     private JPanel creerPanelRecherche() {
         JPanel panelRecherche = new JPanel(new GridBagLayout());
         panelRecherche.setBorder(new TitledBorder("Recherche"));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
 
-        // --- Recherche par Nom ---
         gbc.gridx = 0;
         gbc.gridy = 0;
         panelRecherche.add(new JLabel("Par nom:"), gbc);
@@ -140,7 +135,6 @@ public class PanelClient extends JPanel {
         btnRechercheNom.addActionListener(e -> rechercherParNom());
         panelRecherche.add(btnRechercheNom, gbc);
 
-        // --- Recherche par NSS ---
         gbc.gridx = 0;
         gbc.gridy = 1;
         panelRecherche.add(new JLabel("Par N° Séc. Sociale:"), gbc);
@@ -152,7 +146,6 @@ public class PanelClient extends JPanel {
         btnRechercheNss.addActionListener(e -> rechercherParNss());
         panelRecherche.add(btnRechercheNss, gbc);
 
-        // --- Recherche par Email ---
         gbc.gridx = 0;
         gbc.gridy = 2;
         panelRecherche.add(new JLabel("Par Email:"), gbc);
@@ -164,18 +157,15 @@ public class PanelClient extends JPanel {
         btnRechercheEmail.addActionListener(e -> rechercherParEmail());
         panelRecherche.add(btnRechercheEmail, gbc);
 
-        // --- Bouton Afficher tous ---
         JButton btnAfficherTous = new JButton("Afficher tous");
         btnAfficherTous.addActionListener(e -> chargerClients());
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 3;
         panelRecherche.add(btnAfficherTous, gbc);
-
         return panelRecherche;
     }
 
-    // ===================== TABLE CLIENT =====================
     private void creerTable() {
         String[] colonnes = {"ID", "Nom", "Prénom", "Adresse", "Code Postal", "Ville",
                 "Téléphone", "Email", "NSS", "Date Naissance", "Médecin", "Mutuelle",
@@ -191,13 +181,9 @@ public class PanelClient extends JPanel {
 
         tableClient = new JTable(modelClient);
         tableClient.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-        // Masquer ID
         tableClient.getColumnModel().getColumn(0).setMinWidth(0);
         tableClient.getColumnModel().getColumn(0).setMaxWidth(0);
         tableClient.getColumnModel().getColumn(0).setWidth(0);
-
-        // Alternance couleurs
         tableClient.setDefaultRenderer(Object.class, new AlternatingRowRenderer());
 
         tableClient.addMouseListener(new MouseAdapter() {
@@ -215,7 +201,6 @@ public class PanelClient extends JPanel {
         gbc.anchor = GridBagConstraints.EAST;
         gbc.fill = GridBagConstraints.NONE;
         panel.add(new JLabel(label), gbc);
-
         gbc.gridx = colLabel + 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         panel.add(field, gbc);
@@ -239,27 +224,22 @@ public class PanelClient extends JPanel {
             if (!dateStr.isEmpty()) {
                 client.setDateNaissance(dateStr); // ✅ string direct
             }
-
             client.setIdTitulaireMutuelle(txtIdTitulaireClient.getText().trim());
-
             if (!txtIdRegimeClient.getText().trim().isEmpty()) {
                 Regime r = new Regime();
                 r.setIdRegime(Integer.parseInt(txtIdRegimeClient.getText().trim()));
                 client.setRegime(r);
             }
-
             if (!txtIdMedecinClient.getText().trim().isEmpty()) {
                 Medecin m = new Medecin();
                 m.setIdMedecin(Integer.parseInt(txtIdMedecinClient.getText().trim()));
                 client.setMedecin(m);
             }
-
             if (!txtIdMutuelleClient.getText().trim().isEmpty()) {
                 Mutuelle mu = new Mutuelle();
                 mu.setIdMutuelle(Integer.parseInt(txtIdMutuelleClient.getText().trim()));
                 client.setMutuelle(mu);
             }
-
             if (clientDAO.insert(client)) {
                 chargerClients();
                 viderChamps();
@@ -267,7 +247,6 @@ public class PanelClient extends JPanel {
             } else {
                 JOptionPane.showMessageDialog(this, "Erreur lors de l'ajout du client.");
             }
-
         } catch (SaisieException e) {
             JOptionPane.showMessageDialog(this, "Erreur de saisie : " + e.getMessage());
         } catch (NumberFormatException e) {
@@ -277,13 +256,11 @@ public class PanelClient extends JPanel {
         }
     }
 
-
     private void modifierClient() {
         if (clientIdSelectionne == -1) {
             JOptionPane.showMessageDialog(this, "Sélectionnez un client à modifier.");
             return;
         }
-
         try {
             Client client = clientDAO.findById(clientIdSelectionne);
             if (client != null) {
@@ -347,7 +324,6 @@ public class PanelClient extends JPanel {
         }
     }
 
-
     private void supprimerClient() {
         if (clientIdSelectionne == -1) {
             JOptionPane.showMessageDialog(this, "Sélectionnez un client à supprimer.");
@@ -366,14 +342,13 @@ public class PanelClient extends JPanel {
         }
     }
 
-    // ===================== CHARGEMENT CLIENT =====================
     public void chargerClients() {
         modelClient.setRowCount(0);
         List<Client> clients = clientDAO.findAll();
         for (Client c : clients) {
             modelClient.addRow(convertirClientEnRow(c));
         }
-        ajusterColonnesJTable(); // <-- ajuste la largeur après remplissage
+        ajusterColonnesJTable();
     }
 
     private void chargerClientDansFormulaire() {
@@ -391,7 +366,7 @@ public class PanelClient extends JPanel {
                 txtEmailClient.setText(c.getEmail());
                 txtNssClient.setText(c.getNss());
                 txtDateNaissanceClient.setText(c.getDateNaissance() != null ?
-                        DateTimePaternFr.formatDate(c.getDateNaissance(), "dd/MM/yyyy") : "");
+                        DateTimePatternFr.formatDate(c.getDateNaissance(), "dd/MM/yyyy") : "");
                 txtIdTitulaireClient.setText(c.getIdTitulaireMutuelle());
                 txtIdRegimeClient.setText(c.getRegime() != null ? String.valueOf(c.getRegime().getIdRegime()) : "");
                 txtIdMedecinClient.setText(c.getMedecin() != null ? String.valueOf(c.getMedecin().getIdMedecin()) : "");
@@ -473,14 +448,13 @@ public class PanelClient extends JPanel {
                 c.getTelephone(),
                 c.getEmail(),
                 c.getNss(),
-                c.getDateNaissance() != null ? DateTimePaternFr.formatDate(c.getDateNaissance(), "dd/MM/yyyy") : "",
+                c.getDateNaissance() != null ? DateTimePatternFr.formatDate(c.getDateNaissance(), "dd/MM/yyyy") : "",
                 nomMedecin,
                 nomMutuelle,
                 nomRegime
         };
     }
 
-    // ===================== RENDERER ALTERNANCE =====================
     private static class AlternatingRowRenderer extends DefaultTableCellRenderer {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value,
@@ -493,7 +467,6 @@ public class PanelClient extends JPanel {
         }
     }
 
-    // ===================== AJUSTEMENT LARGEUR COLONNES =====================
     private void ajusterColonnesJTable() {
         final int PADDING = 10;
         for (int col = 0; col < tableClient.getColumnCount(); col++) {

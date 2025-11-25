@@ -2,7 +2,7 @@ package training.afpa.cda24060.modele;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import training.afpa.cda24060.utilitaires.DateTimePaternFr;
+import training.afpa.cda24060.utilitaires.DateTimePatternFr;
 import training.afpa.cda24060.utilitaires.LogUtils;
 
 import java.time.LocalDate;
@@ -87,7 +87,7 @@ public class Ordonnance {
     }
 
     public String getDateOrdonnanceFormatee() {
-        return DateTimePaternFr.formatDate(dateOrdonnance, "dd/MM/yyyy");
+        return DateTimePatternFr.formatDate(dateOrdonnance, "dd/MM/yyyy");
     }
 
     // ===================== toString =====================

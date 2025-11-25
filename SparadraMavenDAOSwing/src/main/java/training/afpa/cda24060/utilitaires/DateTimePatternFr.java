@@ -7,10 +7,15 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
-public class DateTimePaternFr {
 
-    private static final Logger logger = LoggerFactory.getLogger(DateTimePaternFr.class);
+public class DateTimePatternFr {
+
+    private static final Logger logger = LoggerFactory.getLogger(DateTimePatternFr.class);
     private static final DateTimeFormatter FORMATTERDATEFR = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+    public static String formatDate(LocalDate date) {
+        return date != null ? date.format(FORMATTERDATEFR) : "";
+    }
 
     public static String formatDate(LocalDate date, String pattern) {
         if (date == null || pattern == null || pattern.isBlank()) {
@@ -21,11 +26,14 @@ public class DateTimePaternFr {
     }
 
     public static LocalDate parseDateFromString(String dateStr) {
+        if (dateStr == null || dateStr.isBlank()) {
+            return null;
+        }
         try {
             return LocalDate.parse(dateStr, FORMATTERDATEFR);
         } catch (DateTimeParseException e) {
-            logger.error("Format de date invalide. Utilisez \"dd/MM/yyyy\".", e);
+            logger.error("Format de date invalide. Utilisez \"dd/MM/yyyy\" : " + dateStr, e);
+            return null;
         }
-        return null;
     }
 }
