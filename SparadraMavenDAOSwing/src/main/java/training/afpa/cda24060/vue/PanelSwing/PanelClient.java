@@ -8,7 +8,7 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
 import java.util.List;
 
 import training.afpa.cda24060.ClasseDAO.ClientDAO;
@@ -17,10 +17,10 @@ import training.afpa.cda24060.modele.Client;
 import training.afpa.cda24060.modele.Medecin;
 import training.afpa.cda24060.modele.Mutuelle;
 import training.afpa.cda24060.modele.Regime;
+import training.afpa.cda24060.utilitaires.DateTimePaternFr;
 
 public class PanelClient extends JPanel {
 
-    private static final DateTimeFormatter FORMAT_FR = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private final ClientDAO clientDAO = new ClientDAO();
 
     private JTable tableClient;
@@ -30,7 +30,7 @@ public class PanelClient extends JPanel {
     private JTextField txtVilleClient, txtTelephoneClient, txtEmailClient, txtNssClient;
     private JTextField txtDateNaissanceClient, txtIdRegimeClient, txtIdMedecinClient, txtIdMutuelleClient;
     private JTextField txtIdTitulaireClient;
-    private JTextField txtRechercheNom;
+    private JTextField txtRechercheNom, txtRechercheNss, txtRechercheEmail;
 
     private int clientIdSelectionne = -1;
 
@@ -38,6 +38,7 @@ public class PanelClient extends JPanel {
         initComponents();
     }
 
+    // ===================== INIT COMPONENTS =====================
     private void initComponents() {
         setLayout(new BorderLayout());
 
@@ -58,12 +59,20 @@ public class PanelClient extends JPanel {
         chargerClients();
     }
 
+    // ===================== PANEL SAISIE =====================
     private JPanel creerPanelSaisie() {
         JPanel panelSaisieClient = new JPanel(new GridBagLayout());
         panelSaisieClient.setBorder(new TitledBorder("Nouveau Client"));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
 
+        creerChampsSaisie(panelSaisieClient, gbc);
+        creerPanelBoutonsSaisie(panelSaisieClient, gbc);
+
+        return panelSaisieClient;
+    }
+
+    private void creerChampsSaisie(JPanel panelSaisieClient, GridBagConstraints gbc) {
         ajouterChamp(panelSaisieClient, "Nom :", txtNomClient = new JTextField(15), 0, 0, gbc);
         ajouterChamp(panelSaisieClient, "Prénom :", txtPrenomClient = new JTextField(15), 0, 1, gbc);
         ajouterChamp(panelSaisieClient, "Adresse :", txtAdresseClient = new JTextField(15), 0, 2, gbc);
@@ -87,7 +96,9 @@ public class PanelClient extends JPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         txtIdTitulaireClient = new JTextField(15);
         panelSaisieClient.add(txtIdTitulaireClient, gbc);
+    }
 
+    private void creerPanelBoutonsSaisie(JPanel panelSaisieClient, GridBagConstraints gbc) {
         JPanel panelBoutons = new JPanel(new FlowLayout());
         JButton btnAjouter = new JButton("Ajouter");
         JButton btnModifier = new JButton("Modifier");
@@ -108,16 +119,16 @@ public class PanelClient extends JPanel {
         gbc.gridy = 7;
         gbc.gridwidth = 4;
         panelSaisieClient.add(panelBoutons, gbc);
-
-        return panelSaisieClient;
     }
 
+    // ===================== PANEL RECHERCHE =====================
     private JPanel creerPanelRecherche() {
         JPanel panelRecherche = new JPanel(new GridBagLayout());
         panelRecherche.setBorder(new TitledBorder("Recherche"));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
 
+        // --- Recherche par Nom ---
         gbc.gridx = 0;
         gbc.gridy = 0;
         panelRecherche.add(new JLabel("Par nom:"), gbc);
@@ -129,25 +140,53 @@ public class PanelClient extends JPanel {
         btnRechercheNom.addActionListener(e -> rechercherParNom());
         panelRecherche.add(btnRechercheNom, gbc);
 
+        // --- Recherche par NSS ---
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        panelRecherche.add(new JLabel("Par N° Séc. Sociale:"), gbc);
+        gbc.gridx = 1;
+        txtRechercheNss = new JTextField(15);
+        panelRecherche.add(txtRechercheNss, gbc);
+        gbc.gridx = 2;
+        JButton btnRechercheNss = new JButton("🔍");
+        btnRechercheNss.addActionListener(e -> rechercherParNss());
+        panelRecherche.add(btnRechercheNss, gbc);
+
+        // --- Recherche par Email ---
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        panelRecherche.add(new JLabel("Par Email:"), gbc);
+        gbc.gridx = 1;
+        txtRechercheEmail = new JTextField(15);
+        panelRecherche.add(txtRechercheEmail, gbc);
+        gbc.gridx = 2;
+        JButton btnRechercheEmail = new JButton("🔍");
+        btnRechercheEmail.addActionListener(e -> rechercherParEmail());
+        panelRecherche.add(btnRechercheEmail, gbc);
+
+        // --- Bouton Afficher tous ---
         JButton btnAfficherTous = new JButton("Afficher tous");
         btnAfficherTous.addActionListener(e -> chargerClients());
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy = 3;
         gbc.gridwidth = 3;
         panelRecherche.add(btnAfficherTous, gbc);
 
         return panelRecherche;
     }
 
+    // ===================== TABLE CLIENT =====================
     private void creerTable() {
-        String[] colonnes = {"ID","Nom", "Prénom", "Adresse", "Code Postal", "Ville",
+        String[] colonnes = {"ID", "Nom", "Prénom", "Adresse", "Code Postal", "Ville",
                 "Téléphone", "Email", "NSS", "Date Naissance", "Médecin", "Mutuelle",
                 "Régime"
         };
 
         modelClient = new DefaultTableModel(colonnes, 0) {
             @Override
-            public boolean isCellEditable(int row, int column) { return false; }
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
         };
 
         tableClient = new JTable(modelClient);
@@ -182,9 +221,11 @@ public class PanelClient extends JPanel {
         panel.add(field, gbc);
     }
 
+    // ===================== ACTIONS =====================
     private void ajouterClient() {
         try {
             Client client = new Client();
+
             client.setNom(txtNomClient.getText().trim());
             client.setPrenom(txtPrenomClient.getText().trim());
             client.setAdresse(txtAdresseClient.getText().trim());
@@ -193,7 +234,12 @@ public class PanelClient extends JPanel {
             client.setTelephone(txtTelephoneClient.getText().trim());
             client.setEmail(txtEmailClient.getText().trim());
             client.setNss(txtNssClient.getText().trim());
-            client.setDateNaissance(txtDateNaissanceClient.getText().trim());
+
+            String dateStr = txtDateNaissanceClient.getText().trim();
+            if (!dateStr.isEmpty()) {
+                client.setDateNaissance(dateStr); // ✅ string direct
+            }
+
             client.setIdTitulaireMutuelle(txtIdTitulaireClient.getText().trim());
 
             if (!txtIdRegimeClient.getText().trim().isEmpty()) {
@@ -224,16 +270,20 @@ public class PanelClient extends JPanel {
 
         } catch (SaisieException e) {
             JOptionPane.showMessageDialog(this, "Erreur de saisie : " + e.getMessage());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Erreur : un ID doit être un nombre entier.");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Erreur : " + e.getMessage());
         }
     }
+
 
     private void modifierClient() {
         if (clientIdSelectionne == -1) {
             JOptionPane.showMessageDialog(this, "Sélectionnez un client à modifier.");
             return;
         }
+
         try {
             Client client = clientDAO.findById(clientIdSelectionne);
             if (client != null) {
@@ -245,23 +295,38 @@ public class PanelClient extends JPanel {
                 client.setTelephone(txtTelephoneClient.getText().trim());
                 client.setEmail(txtEmailClient.getText().trim());
                 client.setNss(txtNssClient.getText().trim());
-                client.setDateNaissance(txtDateNaissanceClient.getText().trim());
+
+                String dateStr = txtDateNaissanceClient.getText().trim();
+                if (!dateStr.isEmpty()) {
+                    client.setDateNaissance(dateStr); // ✅ string direct
+                } else {
+                    client.setDateNaissance(""); // vide si non rempli
+                }
+
                 client.setIdTitulaireMutuelle(txtIdTitulaireClient.getText().trim());
 
                 if (!txtIdRegimeClient.getText().trim().isEmpty()) {
                     Regime r = new Regime();
                     r.setIdRegime(Integer.parseInt(txtIdRegimeClient.getText().trim()));
                     client.setRegime(r);
+                } else {
+                    client.setRegime(null);
                 }
+
                 if (!txtIdMedecinClient.getText().trim().isEmpty()) {
                     Medecin m = new Medecin();
                     m.setIdMedecin(Integer.parseInt(txtIdMedecinClient.getText().trim()));
                     client.setMedecin(m);
+                } else {
+                    client.setMedecin(null);
                 }
+
                 if (!txtIdMutuelleClient.getText().trim().isEmpty()) {
                     Mutuelle mu = new Mutuelle();
                     mu.setIdMutuelle(Integer.parseInt(txtIdMutuelleClient.getText().trim()));
                     client.setMutuelle(mu);
+                } else {
+                    client.setMutuelle(null);
                 }
 
                 if (clientDAO.update(client)) {
@@ -273,10 +338,15 @@ public class PanelClient extends JPanel {
                     JOptionPane.showMessageDialog(this, "Erreur lors de la modification.");
                 }
             }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erreur : " + ex.getMessage());
+        } catch (SaisieException e) {
+            JOptionPane.showMessageDialog(this, "Erreur de saisie : " + e.getMessage());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Erreur : un ID doit être un nombre entier.");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erreur : " + e.getMessage());
         }
     }
+
 
     private void supprimerClient() {
         if (clientIdSelectionne == -1) {
@@ -296,33 +366,14 @@ public class PanelClient extends JPanel {
         }
     }
 
+    // ===================== CHARGEMENT CLIENT =====================
     public void chargerClients() {
         modelClient.setRowCount(0);
         List<Client> clients = clientDAO.findAll();
         for (Client c : clients) {
-            String nomMedecin = (c.getMedecin() != null) ? c.getMedecin().getNom() + " " + c.getMedecin().getPrenom() : "";
-            String nomMutuelle = (c.getMutuelle() != null) ? c.getMutuelle().getNomMutuelle() : "";
-            String nomRegime = (c.getRegime() != null) ? c.getRegime().getNomRegime() : "";
-            String dateNaissance = (c.getDateNaissance() != null) ? c.getDateNaissance().format(FORMAT_FR) : "";
-
-            modelClient.addRow(new Object[]{
-                    c.getIdClient(),
-                    c.getNom(),
-                    c.getPrenom(),
-                    c.getAdresse(),
-                    c.getCodePostal(),
-                    c.getVille(),
-                    c.getTelephone(),
-                    c.getEmail(),
-                    c.getNss(),
-                    dateNaissance,
-                    nomMedecin,
-                    nomMutuelle,
-                    nomRegime
-            });
+            modelClient.addRow(convertirClientEnRow(c));
         }
-
-        ajusterColonnesJTable(); // <-- ajuste automatiquement les colonnes
+        ajusterColonnesJTable(); // <-- ajuste la largeur après remplissage
     }
 
     private void chargerClientDansFormulaire() {
@@ -339,7 +390,8 @@ public class PanelClient extends JPanel {
                 txtTelephoneClient.setText(c.getTelephone());
                 txtEmailClient.setText(c.getEmail());
                 txtNssClient.setText(c.getNss());
-                txtDateNaissanceClient.setText(c.getDateNaissance() != null ? c.getDateNaissance().format(FORMAT_FR) : "");
+                txtDateNaissanceClient.setText(c.getDateNaissance() != null ?
+                        DateTimePaternFr.formatDate(c.getDateNaissance(), "dd/MM/yyyy") : "");
                 txtIdTitulaireClient.setText(c.getIdTitulaireMutuelle());
                 txtIdRegimeClient.setText(c.getRegime() != null ? String.valueOf(c.getRegime().getIdRegime()) : "");
                 txtIdMedecinClient.setText(c.getMedecin() != null ? String.valueOf(c.getMedecin().getIdMedecin()) : "");
@@ -357,28 +409,37 @@ public class PanelClient extends JPanel {
         modelClient.setRowCount(0);
         List<Client> resultats = clientDAO.findByNom(nom);
         for (Client c : resultats) {
-            String nomMedecin = (c.getMedecin() != null) ? c.getMedecin().getNom() + " " + c.getMedecin().getPrenom() : "";
-            String nomMutuelle = (c.getMutuelle() != null) ? c.getMutuelle().getNomMutuelle() : "";
-            String nomRegime = (c.getRegime() != null) ? c.getRegime().getNomRegime() : "";
-            String dateNaissance = (c.getDateNaissance() != null) ? c.getDateNaissance().format(FORMAT_FR) : "";
-            modelClient.addRow(new Object[]{
-                    c.getIdClient(),
-                    c.getNom(),
-                    c.getPrenom(),
-                    c.getAdresse(),
-                    c.getCodePostal(),
-                    c.getVille(),
-                    c.getTelephone(),
-                    c.getEmail(),
-                    c.getNss(),
-                    dateNaissance,
-                    nomMedecin,
-                    nomMutuelle,
-                    nomRegime
-            });
+            modelClient.addRow(convertirClientEnRow(c));
         }
+        ajusterColonnesJTable();
+    }
 
-        ajusterColonnesJTable(); // <-- ajuste aussi après recherche
+    private void rechercherParNss() {
+        String nss = txtRechercheNss.getText().trim();
+        if (nss.isEmpty()) {
+            chargerClients();
+            return;
+        }
+        modelClient.setRowCount(0);
+        Client c = clientDAO.findByNSS(nss);
+        if (c != null) {
+            modelClient.addRow(convertirClientEnRow(c));
+        }
+        ajusterColonnesJTable();
+    }
+
+    private void rechercherParEmail() {
+        String email = txtRechercheEmail.getText().trim();
+        if (email.isEmpty()) {
+            chargerClients();
+            return;
+        }
+        modelClient.setRowCount(0);
+        Client c = clientDAO.findByEmail(email);
+        if (c != null) {
+            modelClient.addRow(convertirClientEnRow(c));
+        }
+        ajusterColonnesJTable();
     }
 
     private void viderChamps() {
@@ -398,35 +459,51 @@ public class PanelClient extends JPanel {
         clientIdSelectionne = -1;
     }
 
+    private Object[] convertirClientEnRow(Client c) {
+        String nomMedecin = (c.getMedecin() != null) ? c.getMedecin().getNom() + " " + c.getMedecin().getPrenom() : "";
+        String nomMutuelle = (c.getMutuelle() != null) ? c.getMutuelle().getNomMutuelle() : "";
+        String nomRegime = (c.getRegime() != null) ? c.getRegime().getNomRegime() : "";
+        return new Object[]{
+                c.getIdClient(),
+                c.getNom(),
+                c.getPrenom(),
+                c.getAdresse(),
+                c.getCodePostal(),
+                c.getVille(),
+                c.getTelephone(),
+                c.getEmail(),
+                c.getNss(),
+                c.getDateNaissance() != null ? DateTimePaternFr.formatDate(c.getDateNaissance(), "dd/MM/yyyy") : "",
+                nomMedecin,
+                nomMutuelle,
+                nomRegime
+        };
+    }
 
+    // ===================== RENDERER ALTERNANCE =====================
     private static class AlternatingRowRenderer extends DefaultTableCellRenderer {
-        private final Color lightGray = new Color(58, 198, 38);
-        private final Color white = Color.WHITE;
-
         @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-                                                       boolean hasFocus, int row, int column) {
-            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                                                       boolean isSelected, boolean hasFocus, int row, int column) {
+            super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             if (!isSelected) {
-                c.setBackground(row % 2 == 0 ? white : lightGray);
-            } else {
-                c.setBackground(new Color(184, 207, 229));
+                setBackground(row % 2 == 0 ? Color.WHITE : new Color(134, 236, 122));
             }
-            return c;
+            return this;
         }
     }
-    private void ajusterColonnesJTable() {
-        final int PADDING = 10; // 10 pixels (5 gauche + 5 droite)
-        for (int col = 0; col < tableClient.getColumnCount(); col++) {
-            if (col == 0) continue; // Ignorer l'ID, on veut le garder masqué
 
+    // ===================== AJUSTEMENT LARGEUR COLONNES =====================
+    private void ajusterColonnesJTable() {
+        final int PADDING = 10;
+        for (int col = 0; col < tableClient.getColumnCount(); col++) {
+            if (col == 0) continue; // Ignorer ID masqué
             int maxWidth = 0;
 
             TableCellRenderer headerRenderer = tableClient.getTableHeader().getDefaultRenderer();
             Component headerComp = headerRenderer.getTableCellRendererComponent(
                     tableClient, tableClient.getColumnName(col), false, false, 0, col);
             maxWidth = headerComp.getPreferredSize().width;
-
 
             for (int row = 0; row < tableClient.getRowCount(); row++) {
                 TableCellRenderer cellRenderer = tableClient.getCellRenderer(row, col);
@@ -435,14 +512,7 @@ public class PanelClient extends JPanel {
             }
 
             maxWidth += PADDING;
-
             tableClient.getColumnModel().getColumn(col).setPreferredWidth(maxWidth);
         }
-
-        tableClient.getColumnModel().getColumn(0).setMinWidth(0);
-        tableClient.getColumnModel().getColumn(0).setMaxWidth(0);
-        tableClient.getColumnModel().getColumn(0).setWidth(0);
-        tableClient.revalidate();
-        tableClient.repaint();
     }
 }

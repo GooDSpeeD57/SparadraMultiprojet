@@ -120,7 +120,7 @@ public class MainSwing extends JFrame {
 
     private void quitter() {
         int choix = JOptionPane.showConfirmDialog(this,
-                "Voulez-vous quitter l'application ?",
+                "Voulez-vous quitter Sparadra ?",
                 "Confirmation",
                 JOptionPane.YES_NO_OPTION);
 

@@ -1,17 +1,23 @@
 package training.afpa.cda24060.ClasseDAO;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import training.afpa.cda24060.Connection.DCSingletonHikaricp;
 import training.afpa.cda24060.exception.SaisieException;
 import training.afpa.cda24060.modele.Medicament;
+import training.afpa.cda24060.utilitaires.LogUtils;
+import training.afpa.cda24060.utilitaires.SqlBuilder;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MedicamentDAO extends AbstractDAO<Medicament> {
+
+    private static final Logger logger = LoggerFactory.getLogger(MedicamentDAO.class);
 
     @Override
     protected String getTableName() {
@@ -31,7 +37,10 @@ public class MedicamentDAO extends AbstractDAO<Medicament> {
             med.setNomMedicament(rs.getString("nomMedicament"));
             med.setCategorieMedicament(rs.getString("categorie"));
             med.setPrixMedicament(rs.getDouble("prix"));
-            med.setDateMiseEnCirculation(rs.getDate("dateCirculation").toLocalDate());
+
+            Date sqlDate = rs.getDate("dateCirculation");
+            if (sqlDate != null) med.setDateMiseEnCirculation(sqlDate.toLocalDate());
+
             med.setQuantiteMedicament(rs.getInt("stock"));
             med.setSansOrdonnanceMedicament(rs.getBoolean("sansOrdonnance"));
 
@@ -41,7 +50,7 @@ public class MedicamentDAO extends AbstractDAO<Medicament> {
 
             return med;
         } catch (Exception e) {
-            System.err.println("Erreur mapping Medicament : " + e.getMessage());
+            LogUtils.error(logger, "Erreur mapping Medicament", e);
             return null;
         }
     }
@@ -49,8 +58,12 @@ public class MedicamentDAO extends AbstractDAO<Medicament> {
     @Override
     protected PreparedStatement prepareInsert(Medicament med, Connection conn) {
         try {
-            String sql = "INSERT INTO Medicament (nomMedicament, categorie, prix, dateCirculation, stock, forme, sansOrdonnance) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?)";
+            String sql = new SqlBuilder()
+                    .append("INSERT INTO Medicament (")
+                    .append("nomMedicament, categorie, prix, dateCirculation, stock, forme, sansOrdonnance)")
+                    .append("VALUES (?, ?, ?, ?, ?, ?, ?)")
+                    .toString();
+
             PreparedStatement pst = conn.prepareStatement(sql);
             pst.setString(1, med.getNomMedicament());
             pst.setString(2, med.getCategorieMedicament());
@@ -59,9 +72,11 @@ public class MedicamentDAO extends AbstractDAO<Medicament> {
             pst.setInt(5, med.getQuantiteMedicament());
             pst.setString(6, med.getFormeMedicament() != null ? med.getFormeMedicament() : "Comprimé");
             pst.setBoolean(7, med.isSansOrdonnanceMedicament());
+
+            LogUtils.debug(logger, "PreparedStatement insert Medicament prêt pour : " + med);
             return pst;
         } catch (Exception e) {
-            System.err.println("Erreur prepareInsert Medicament : " + e.getMessage());
+            LogUtils.error(logger, "Erreur prepareInsert Medicament", e);
             return null;
         }
     }
@@ -69,8 +84,12 @@ public class MedicamentDAO extends AbstractDAO<Medicament> {
     @Override
     protected PreparedStatement prepareUpdate(Medicament med, Connection conn) {
         try {
-            String sql = "UPDATE Medicament SET nomMedicament=?, categorie=?, prix=?, dateCirculation=?, stock=?, forme=?, sansOrdonnance=? " +
-                    "WHERE id_Medicament=?";
+            String sql = new SqlBuilder()
+                    .append("UPDATE Medicament SET")
+                    .append("nomMedicament=?, categorie=?, prix=?, dateCirculation=?, stock=?, forme=?, sansOrdonnance=?")
+                    .append("WHERE id_Medicament=?")
+                    .toString();
+
             PreparedStatement pst = conn.prepareStatement(sql);
             pst.setString(1, med.getNomMedicament());
             pst.setString(2, med.getCategorieMedicament());
@@ -80,64 +99,101 @@ public class MedicamentDAO extends AbstractDAO<Medicament> {
             pst.setString(6, med.getFormeMedicament() != null ? med.getFormeMedicament() : "Comprimé");
             pst.setBoolean(7, med.isSansOrdonnanceMedicament());
             pst.setInt(8, med.getIdMedicament());
+
+            LogUtils.debug(logger, "PreparedStatement update Medicament prêt pour : " + med);
             return pst;
         } catch (Exception e) {
-            System.err.println("Erreur prepareUpdate Medicament : " + e.getMessage());
+            LogUtils.error(logger, "Erreur prepareUpdate Medicament", e);
             return null;
         }
     }
 
-    // Retrait de stock
-    public int retirerDuStock(int idMedicament, int quantite) {
-        Medicament med = findById(idMedicament);
-        if (med == null) {
-            System.err.println("Médicament introuvable !");
-            return -1;
-        }
-        if (quantite > med.getQuantiteMedicament()) {
-            System.err.println("Stock insuffisant !");
-            return -1;
-        }
+    public Medicament findById(int idMedicament) {
+        String sql = new SqlBuilder()
+                .append("SELECT * FROM Medicament WHERE id_Medicament=?")
+                .toString();
 
-        try {
-            med.setQuantiteMedicament(med.getQuantiteMedicament() - quantite);
-            update(med);
-        } catch (SaisieException e) {
-            System.err.println("Erreur retrait stock : " + e.getMessage());
-        }
-
-        return med.getQuantiteMedicament();
-    }
-
-    // Recherche de médicaments par nom (partiel ou complet)
-    public List<Medicament> findByName(String nom) {
-        List<Medicament> liste = new ArrayList<>();
-        String sql = "SELECT * FROM Medicament WHERE nomMedicament LIKE ?";
         try (Connection conn = DCSingletonHikaricp.getConnection();
              PreparedStatement pst = conn.prepareStatement(sql)) {
-            pst.setString(1, "%" + nom + "%"); // recherche partielle
+            pst.setInt(1, idMedicament);
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) return map(rs);
+            }
+        } catch (Exception e) {
+            LogUtils.error(logger, "Erreur findById Medicament id=" + idMedicament, e);
+        }
+        return null;
+    }
+
+    public List<Medicament> findByName(String nom) {
+        List<Medicament> list = new ArrayList<>();
+        String sql = new SqlBuilder()
+                .append("SELECT * FROM Medicament WHERE nomMedicament LIKE ?")
+                .toString();
+
+        try (Connection conn = DCSingletonHikaricp.getConnection();
+             PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setString(1, "%" + nom + "%");
             try (ResultSet rs = pst.executeQuery()) {
                 while (rs.next()) {
-                    liste.add(map(rs));
+                    Medicament med = map(rs);
+                    if (med != null) list.add(med);
                 }
             }
         } catch (Exception e) {
-            System.err.println("Erreur findByName Medicament : " + e.getMessage());
+            LogUtils.error(logger, "Erreur findByName Medicament nom=" + nom, e);
         }
-        return liste;
+        return list;
     }
 
+    public List<Medicament> findAll() {
+        List<Medicament> list = new ArrayList<>();
+        String sql = new SqlBuilder()
+                .append("SELECT * FROM Medicament")
+                .toString();
 
-    // Compter tous les médicaments
+        try (Connection conn = DCSingletonHikaricp.getConnection();
+             PreparedStatement pst = conn.prepareStatement(sql);
+             ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                Medicament med = map(rs);
+                if (med != null) list.add(med);
+            }
+        } catch (Exception e) {
+            LogUtils.error(logger, "Erreur findAll Medicament", e);
+        }
+        return list;
+    }
+
     public int countMedicaments() {
-        String sql = "SELECT COUNT(*) AS total FROM Medicament";
+        String sql = new SqlBuilder()
+                .append("SELECT COUNT(*) AS total FROM Medicament")
+                .toString();
+
         try (Connection conn = DCSingletonHikaricp.getConnection();
              PreparedStatement pst = conn.prepareStatement(sql);
              ResultSet rs = pst.executeQuery()) {
             if (rs.next()) return rs.getInt("total");
         } catch (Exception e) {
-            System.err.println("Erreur countMedicaments : " + e.getMessage());
+            LogUtils.error(logger, "Erreur countMedicaments", e);
         }
         return 0;
+    }
+
+    public int retirerDuStock(int idMedicament, int quantite) throws SaisieException {
+        Medicament med = findById(idMedicament);
+        if (med == null) {
+            LogUtils.error(logger, "Médicament introuvable id=" + idMedicament);
+            return -1;
+        }
+        if (quantite > med.getQuantiteMedicament()) {
+            LogUtils.error(logger, "Stock insuffisant pour id=" + idMedicament);
+            return -1;
+        }
+
+        med.setQuantiteMedicament(med.getQuantiteMedicament() - quantite);
+        update(med);
+
+        return med.getQuantiteMedicament();
     }
 }

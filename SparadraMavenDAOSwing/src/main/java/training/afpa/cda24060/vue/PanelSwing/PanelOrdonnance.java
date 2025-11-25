@@ -259,7 +259,7 @@ public class PanelOrdonnance extends JPanel {
                 return;
             }
             String rppsSelectionne = (String) modelMedecins.getValueAt(ligneMedecin, 2);
-            medecinSelectionne[0] = medecinDAO.findOneByRPPS(rppsSelectionne);
+            medecinSelectionne[0] = medecinDAO.findByRPPS(rppsSelectionne);
 
             // --- Médicaments sélectionnés ---
             int[] lignesMedicaments = tableMedicaments.getSelectedRows();
