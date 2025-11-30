@@ -1,0 +1,147 @@
+26-11-2025 14:32:29 [AWT-EventQueue-0] INFO  com.zaxxer.hikari.HikariDataSource - AFPA-HikariPool - Starting...
+26-11-2025 14:32:30 [AWT-EventQueue-0] INFO  com.zaxxer.hikari.pool.HikariPool - AFPA-HikariPool - Added connection com.mysql.cj.jdbc.ConnectionImpl@392822b1
+26-11-2025 14:32:30 [AWT-EventQueue-0] INFO  com.zaxxer.hikari.HikariDataSource - AFPA-HikariPool - Start completed.
+28-11-2025 23:09:58 [AWT-EventQueue-0] INFO  t.a.c.connection.Singleton_HikariCP - Initialisation du pool HikariCP...
+28-11-2025 23:09:58 [AWT-EventQueue-0] INFO  t.a.c.connection.Singleton_HikariCP - Configuration chargée depuis conf.properties 
+28-11-2025 23:09:58 [AWT-EventQueue-0] INFO  t.a.c.connection.Singleton_HikariCP - HikariCP configuré avec succès. Création du pool...
+28-11-2025 23:09:58 [AWT-EventQueue-0] ERROR com.zaxxer.hikari.HikariConfig - AFPA-HikariPool - jdbcUrl is required with driverClassName.
+28-11-2025 23:09:58 [AWT-EventQueue-0] ERROR t.a.c.connection.Singleton_HikariCP - Erreur lors de l'initialisation du pool HikariCP
+java.lang.IllegalArgumentException: jdbcUrl is required with driverClassName.
+	at com.zaxxer.hikari.HikariConfig.validate(HikariConfig.java:1087)
+	at com.zaxxer.hikari.HikariDataSource.<init>(HikariDataSource.java:76)
+	at training.afpa.cda24060.connection.Singleton_HikariCP.initDataSource(Singleton_HikariCP.java:62)
+	at training.afpa.cda24060.connection.Singleton_HikariCP.<clinit>(Singleton_HikariCP.java:19)
+	at training.afpa.cda24060.ClasseDAO.AbstractDAO.getConnection(AbstractDAO.java:12)
+	at training.afpa.cda24060.ClasseDAO.ClientDAO.countClient(ClientDAO.java:212)
+	at training.afpa.cda24060.vue.PanelSwing.PanelAccueil.createStatsPanel(PanelAccueil.java:99)
+	at training.afpa.cda24060.vue.PanelSwing.PanelAccueil.initComponents(PanelAccueil.java:33)
+	at training.afpa.cda24060.vue.PanelSwing.PanelAccueil.<init>(PanelAccueil.java:20)
+	at training.afpa.cda24060.controleur.MainSwing.initComponents(MainSwing.java:60)
+	at training.afpa.cda24060.controleur.MainSwing.<init>(MainSwing.java:31)
+	at training.afpa.cda24060.controleur.MainSwing.lambda$main$3(MainSwing.java:163)
+	at java.desktop/java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:318)
+	at java.desktop/java.awt.EventQueue.dispatchEventImpl(EventQueue.java:781)
+	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:728)
+	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:722)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:400)
+	at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:87)
+	at java.desktop/java.awt.EventQueue.dispatchEvent(EventQueue.java:750)
+	at java.desktop/java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:207)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:128)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:117)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:113)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:105)
+	at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:92)
+28-11-2025 23:11:03 [AWT-EventQueue-0] INFO  t.a.c.connection.Singleton_HikariCP - Initialisation du pool HikariCP...
+28-11-2025 23:11:03 [AWT-EventQueue-0] INFO  t.a.c.connection.Singleton_HikariCP - Configuration chargée depuis conf.properties 
+28-11-2025 23:11:03 [AWT-EventQueue-0] INFO  t.a.c.connection.Singleton_HikariCP - HikariCP configuré avec succès. Création du pool...
+28-11-2025 23:11:03 [AWT-EventQueue-0] ERROR com.zaxxer.hikari.HikariConfig - AFPA-HikariPool - jdbcUrl is required with driverClassName.
+28-11-2025 23:11:03 [AWT-EventQueue-0] ERROR t.a.c.connection.Singleton_HikariCP - Erreur lors de l'initialisation du pool HikariCP
+java.lang.IllegalArgumentException: jdbcUrl is required with driverClassName.
+	at com.zaxxer.hikari.HikariConfig.validate(HikariConfig.java:1087)
+	at com.zaxxer.hikari.HikariDataSource.<init>(HikariDataSource.java:76)
+	at training.afpa.cda24060.connection.Singleton_HikariCP.initDataSource(Singleton_HikariCP.java:62)
+	at training.afpa.cda24060.connection.Singleton_HikariCP.<clinit>(Singleton_HikariCP.java:19)
+	at training.afpa.cda24060.ClasseDAO.AbstractDAO.getConnection(AbstractDAO.java:12)
+	at training.afpa.cda24060.ClasseDAO.ClientDAO.countClient(ClientDAO.java:212)
+	at training.afpa.cda24060.vue.PanelSwing.PanelAccueil.createStatsPanel(PanelAccueil.java:99)
+	at training.afpa.cda24060.vue.PanelSwing.PanelAccueil.initComponents(PanelAccueil.java:33)
+	at training.afpa.cda24060.vue.PanelSwing.PanelAccueil.<init>(PanelAccueil.java:20)
+	at training.afpa.cda24060.controleur.MainSwing.initComponents(MainSwing.java:60)
+	at training.afpa.cda24060.controleur.MainSwing.<init>(MainSwing.java:31)
+	at training.afpa.cda24060.controleur.MainSwing.lambda$main$3(MainSwing.java:163)
+	at java.desktop/java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:318)
+	at java.desktop/java.awt.EventQueue.dispatchEventImpl(EventQueue.java:781)
+	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:728)
+	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:722)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:400)
+	at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:87)
+	at java.desktop/java.awt.EventQueue.dispatchEvent(EventQueue.java:750)
+	at java.desktop/java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:207)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:128)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:117)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:113)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:105)
+	at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:92)
+28-11-2025 23:19:27 [AWT-EventQueue-0] INFO  t.a.c.connection.Singleton_HikariCP - Initialisation du pool HikariCP...
+28-11-2025 23:19:27 [AWT-EventQueue-0] INFO  t.a.c.connection.Singleton_HikariCP - Configuration chargée depuis conf.properties 
+28-11-2025 23:19:27 [AWT-EventQueue-0] INFO  t.a.c.connection.Singleton_HikariCP - HikariCP configuré avec succès. Création du pool...
+28-11-2025 23:19:27 [AWT-EventQueue-0] INFO  com.zaxxer.hikari.HikariDataSource - AFPA-HikariPool - Starting...
+28-11-2025 23:19:29 [AWT-EventQueue-0] ERROR t.a.c.connection.Singleton_HikariCP - Erreur lors de l'initialisation du pool HikariCP
+com.zaxxer.hikari.pool.HikariPool$PoolInitializationException: Failed to initialize pool: Access denied for user 'root'@'localhost' (using password: YES)
+	at com.zaxxer.hikari.pool.HikariPool.throwPoolInitializationException(HikariPool.java:610)
+	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:597)
+	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:97)
+	at com.zaxxer.hikari.HikariDataSource.<init>(HikariDataSource.java:80)
+	at training.afpa.cda24060.connection.Singleton_HikariCP.initDataSource(Singleton_HikariCP.java:62)
+	at training.afpa.cda24060.connection.Singleton_HikariCP.<clinit>(Singleton_HikariCP.java:19)
+	at training.afpa.cda24060.ClasseDAO.AbstractDAO.getConnection(AbstractDAO.java:12)
+	at training.afpa.cda24060.ClasseDAO.ClientDAO.countClient(ClientDAO.java:212)
+	at training.afpa.cda24060.vue.PanelSwing.PanelAccueil.createStatsPanel(PanelAccueil.java:99)
+	at training.afpa.cda24060.vue.PanelSwing.PanelAccueil.initComponents(PanelAccueil.java:33)
+	at training.afpa.cda24060.vue.PanelSwing.PanelAccueil.<init>(PanelAccueil.java:20)
+	at training.afpa.cda24060.controleur.MainSwing.initComponents(MainSwing.java:60)
+	at training.afpa.cda24060.controleur.MainSwing.<init>(MainSwing.java:31)
+	at training.afpa.cda24060.controleur.MainSwing.lambda$main$3(MainSwing.java:163)
+	at java.desktop/java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:318)
+	at java.desktop/java.awt.EventQueue.dispatchEventImpl(EventQueue.java:781)
+	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:728)
+	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:722)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:400)
+	at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:87)
+	at java.desktop/java.awt.EventQueue.dispatchEvent(EventQueue.java:750)
+	at java.desktop/java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:207)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:128)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:117)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:113)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:105)
+	at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:92)
+Caused by: java.sql.SQLException: Access denied for user 'root'@'localhost' (using password: YES)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:121)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:114)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:840)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:416)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:237)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:180)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:576)
+	... 25 common frames omitted
+28-11-2025 23:20:13 [AWT-EventQueue-0] INFO  t.a.c.connection.Singleton_HikariCP - Initialisation du pool HikariCP...
+28-11-2025 23:20:13 [AWT-EventQueue-0] INFO  t.a.c.connection.Singleton_HikariCP - Configuration chargée depuis conf.properties 
+28-11-2025 23:20:13 [AWT-EventQueue-0] INFO  t.a.c.connection.Singleton_HikariCP - HikariCP configuré avec succès. Création du pool...
+28-11-2025 23:20:13 [AWT-EventQueue-0] INFO  com.zaxxer.hikari.HikariDataSource - AFPA-HikariPool - Starting...
+28-11-2025 23:20:13 [AWT-EventQueue-0] INFO  com.zaxxer.hikari.pool.HikariPool - AFPA-HikariPool - Added connection com.mysql.cj.jdbc.ConnectionImpl@c0358a8
+28-11-2025 23:20:13 [AWT-EventQueue-0] INFO  com.zaxxer.hikari.HikariDataSource - AFPA-HikariPool - Start completed.
+28-11-2025 23:20:13 [AWT-EventQueue-0] INFO  t.a.c.connection.Singleton_HikariCP - Pool HikariCP initialisé avec succès.
+28-11-2025 23:29:43 [AWT-EventQueue-0] INFO  t.a.c.connection.Singleton_HikariCP - Fermeture du pool HikariCP...
+28-11-2025 23:29:43 [AWT-EventQueue-0] INFO  com.zaxxer.hikari.HikariDataSource - AFPA-HikariPool - Shutdown initiated...
+28-11-2025 23:29:43 [AWT-EventQueue-0] INFO  com.zaxxer.hikari.HikariDataSource - AFPA-HikariPool - Shutdown completed.
+28-11-2025 23:29:43 [AWT-EventQueue-0] INFO  t.a.c.connection.Singleton_HikariCP - Pool HikariCP fermé avec succès.
+28-11-2025 23:34:16 [AWT-EventQueue-0] INFO  t.a.c.connection.Singleton_HikariCP - Initialisation du pool HikariCP...
+28-11-2025 23:34:16 [AWT-EventQueue-0] INFO  t.a.c.connection.Singleton_HikariCP - Configuration chargée depuis conf.properties 
+28-11-2025 23:34:16 [AWT-EventQueue-0] INFO  t.a.c.connection.Singleton_HikariCP - HikariCP configuré avec succès. Création du pool...
+28-11-2025 23:34:16 [AWT-EventQueue-0] INFO  com.zaxxer.hikari.HikariDataSource - AFPA-HikariPool - Starting...
+28-11-2025 23:34:17 [AWT-EventQueue-0] INFO  com.zaxxer.hikari.pool.HikariPool - AFPA-HikariPool - Added connection com.mysql.cj.jdbc.ConnectionImpl@aad7a34
+28-11-2025 23:34:17 [AWT-EventQueue-0] INFO  com.zaxxer.hikari.HikariDataSource - AFPA-HikariPool - Start completed.
+28-11-2025 23:34:17 [AWT-EventQueue-0] INFO  t.a.c.connection.Singleton_HikariCP - Pool HikariCP initialisé avec succès.
+28-11-2025 23:42:03 [AWT-EventQueue-0] INFO  t.a.c.connection.Singleton_HikariCP - Fermeture du pool HikariCP...
+28-11-2025 23:42:03 [AWT-EventQueue-0] INFO  com.zaxxer.hikari.HikariDataSource - AFPA-HikariPool - Shutdown initiated...
+28-11-2025 23:42:03 [AWT-EventQueue-0] INFO  com.zaxxer.hikari.HikariDataSource - AFPA-HikariPool - Shutdown completed.
+28-11-2025 23:42:03 [AWT-EventQueue-0] INFO  t.a.c.connection.Singleton_HikariCP - Pool HikariCP fermé avec succès.
+28-11-2025 23:42:10 [AWT-EventQueue-0] INFO  t.a.c.connection.Singleton_HikariCP - Initialisation du pool HikariCP...
+28-11-2025 23:42:10 [AWT-EventQueue-0] INFO  t.a.c.connection.Singleton_HikariCP - Configuration chargée depuis conf.properties 
+28-11-2025 23:42:10 [AWT-EventQueue-0] INFO  t.a.c.connection.Singleton_HikariCP - HikariCP configuré avec succès. Création du pool...
+28-11-2025 23:42:10 [AWT-EventQueue-0] INFO  com.zaxxer.hikari.HikariDataSource - AFPA-HikariPool - Starting...
+28-11-2025 23:42:10 [AWT-EventQueue-0] INFO  com.zaxxer.hikari.pool.HikariPool - AFPA-HikariPool - Added connection com.mysql.cj.jdbc.ConnectionImpl@c0358a8
+28-11-2025 23:42:10 [AWT-EventQueue-0] INFO  com.zaxxer.hikari.HikariDataSource - AFPA-HikariPool - Start completed.
+28-11-2025 23:42:10 [AWT-EventQueue-0] INFO  t.a.c.connection.Singleton_HikariCP - Pool HikariCP initialisé avec succès.
+28-11-2025 23:50:09 [AWT-EventQueue-0] INFO  t.a.c.connection.Singleton_HikariCP - Initialisation du pool HikariCP...
+28-11-2025 23:50:09 [AWT-EventQueue-0] INFO  t.a.c.connection.Singleton_HikariCP - Configuration chargée depuis conf.properties 
+28-11-2025 23:50:09 [AWT-EventQueue-0] INFO  t.a.c.connection.Singleton_HikariCP - HikariCP configuré avec succès. Création du pool...
+28-11-2025 23:50:09 [AWT-EventQueue-0] INFO  com.zaxxer.hikari.HikariDataSource - AFPA-HikariPool - Starting...
+28-11-2025 23:50:10 [AWT-EventQueue-0] INFO  com.zaxxer.hikari.pool.HikariPool - AFPA-HikariPool - Added connection com.mysql.cj.jdbc.ConnectionImpl@aad7a34
+28-11-2025 23:50:10 [AWT-EventQueue-0] INFO  com.zaxxer.hikari.HikariDataSource - AFPA-HikariPool - Start completed.
+28-11-2025 23:50:10 [AWT-EventQueue-0] INFO  t.a.c.connection.Singleton_HikariCP - Pool HikariCP initialisé avec succès.

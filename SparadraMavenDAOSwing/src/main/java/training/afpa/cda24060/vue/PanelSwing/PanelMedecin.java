@@ -309,9 +309,10 @@ public class PanelMedecin extends JPanel {
             chargerMedecins();
             return;
         }
+
         modelMedecin.setRowCount(0);
-        List<Medecin> resultats = medecinDAO.findByRPPS(rpps);
-        for (Medecin m : resultats) {
+        Medecin m = medecinDAO.findByRPPS(rpps);
+        if (m != null) {
             modelMedecin.addRow(new Object[]{
                     m.getIdMedecin(),
                     m.getNom(),

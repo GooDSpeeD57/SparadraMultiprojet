@@ -5,12 +5,14 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import training.afpa.cda24060.Connection.DCSingletonHikaricp;
 import training.afpa.cda24060.vue.PanelSwing.*;
 
 public class MainSwing extends JFrame {
 
     private JTabbedPane tabbedPane;
 
+    // Panels
     private PanelAccueil panelAccueil;
     private PanelClient panelClient;
     private PanelMedecin panelMedecin;
@@ -21,7 +23,7 @@ public class MainSwing extends JFrame {
 
     public MainSwing() {
         initComponents();
-        SwingUtilities.invokeLater(this::chargerDonneesPremierChargement);
+        chargerDonneesDansGUI();
     }
 
     private void initComponents() {
@@ -42,7 +44,6 @@ public class MainSwing extends JFrame {
         tabbedPane = new JTabbedPane();
         tabbedPane.setFont(new Font("Arial", Font.BOLD, 12));
 
-        // Panels EXACTEMENT comme tu les construisais avant
         panelAccueil = new PanelAccueil();
         panelClient = new PanelClient();
         panelMedecin = new PanelMedecin();
@@ -51,7 +52,6 @@ public class MainSwing extends JFrame {
         panelOrdonnance = new PanelOrdonnance(this);
         panelHistorique = new PanelHistorique();
 
-        // Ajout des onglets
         tabbedPane.addTab("Accueil", panelAccueil);
         tabbedPane.addTab("Clients", panelClient);
         tabbedPane.addTab("Médecins", panelMedecin);
@@ -60,10 +60,25 @@ public class MainSwing extends JFrame {
         tabbedPane.addTab("Ordonnances", panelOrdonnance);
         tabbedPane.addTab("Historique", panelHistorique);
 
-        // Charger donnés SEULEMENT lorsque l'onglet change
-        tabbedPane.addChangeListener(e ->
-                chargerOnglet(tabbedPane.getSelectedIndex())
-        );
+        tabbedPane.addChangeListener(e -> {
+            Component selected = tabbedPane.getSelectedComponent();
+
+            if (selected == panelClient) {
+                panelClient.chargerClients();
+            } else if (selected == panelMedecin) {
+                panelMedecin.chargerMedecins();
+            } else if (selected == panelMutuelle) {
+                panelMutuelle.chargerMutuelles();
+            } else if (selected == panelMedicament) {
+                panelMedicament.chargerMedicaments();
+            } else if (selected == panelOrdonnance) {
+                panelOrdonnance.chargerOrdonnances();
+            } else if (selected == panelHistorique) {
+                panelHistorique.chargerHistorique();
+            } else if (selected == panelAccueil) {
+                panelAccueil.actualiserStatistiques();
+            }
+        });
 
         add(tabbedPane);
     }
@@ -75,63 +90,42 @@ public class MainSwing extends JFrame {
         JMenuItem itemQuitter = new JMenuItem("Quitter");
 
         itemQuitter.addActionListener(e -> quitter());
+
         menuFichier.add(itemQuitter);
 
         JMenu menuAide = new JMenu("Aide");
         JMenuItem itemAPropos = new JMenuItem("À propos");
         itemAPropos.addActionListener(e ->
                 JOptionPane.showMessageDialog(this,
-                        "Système de Gestion de Pharmacie\nVersion 1.0\n\nDéveloppé par Julien Taesch",
+                        "Système de Gestion de Pharmacie\nVersion 1.0\n\nDéveloppé avec Java Swing par Julien Taesch",
                         "À propos",
                         JOptionPane.INFORMATION_MESSAGE)
         );
-        menuAide.add(itemAPropos);
 
+        menuAide.add(itemAPropos);
         menuBar.add(menuFichier);
         menuBar.add(menuAide);
-
         setJMenuBar(menuBar);
     }
 
-    // --- Chargement dynamique des panels ---
-
-    private void chargerDonneesPremierChargement() {
-        chargerOnglet(0);  // Charger l'accueil seulement
-    }
-
-    private void chargerOnglet(int index) {
-        switch (index) {
-            case 0 -> panelAccueil.actualiserStatistiques();
-            case 1 -> chargerAsync(panelClient::chargerClients);
-            case 2 -> chargerAsync(panelMedecin::chargerMedecins);
-            case 3 -> chargerAsync(panelMutuelle::chargerMutuelles);
-            case 4 -> chargerAsync(panelMedicament::chargerMedicaments);
-            case 5 -> chargerAsync(panelOrdonnance::chargerOrdonnances);
-            case 6 -> chargerAsync(panelHistorique::chargerHistorique);
-        }
-    }
-
-    // SwingWorker = pas de freeze
-    private void chargerAsync(Runnable task) {
-        new SwingWorker<Void, Void>() {
-            @Override
-            protected Void doInBackground() {
-                task.run();
-                return null;
-            }
-        }.execute();
+    private void chargerDonneesDansGUI() {
+        panelClient.chargerClients();
+        panelMedecin.chargerMedecins();
+        panelMutuelle.chargerMutuelles();
+        panelMedicament.chargerMedicaments();
+        panelOrdonnance.chargerOrdonnances();
+        panelHistorique.chargerHistorique();
+        panelAccueil.actualiserStatistiques();
     }
 
     private void quitter() {
-        int choix = JOptionPane.showConfirmDialog(
-                this,
-                "Voulez-vous quitter l'application ?",
+        int choix = JOptionPane.showConfirmDialog(this,
+                "Voulez-vous quitter Sparadra ?",
                 "Confirmation",
-                JOptionPane.YES_NO_OPTION
-        );
+                JOptionPane.YES_NO_OPTION);
 
         if (choix == JOptionPane.YES_OPTION) {
-            dispose();
+            DCSingletonHikaricp.closePool();
             System.exit(0);
         }
     }

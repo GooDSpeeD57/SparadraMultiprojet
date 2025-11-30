@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DdlMappings">
+    <mapping uuid="a9aafd51-9b9a-4e52-ae99-114bc81b8eaa" name="sparadra@localhost Mapping">
+      <data-sources db="52b6dd8a-4ca5-479f-a42f-6731f3b1af03" />
+      <scope>
+        <node negative="1">
+          <node kind="schema" qname="sparadra" />
+          <node kind="database" negative="1" />
+        </node>
+      </scope>
+    </mapping>
+  </component>
+</project>

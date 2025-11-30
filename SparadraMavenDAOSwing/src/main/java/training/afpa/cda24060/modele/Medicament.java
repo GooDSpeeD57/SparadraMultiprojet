@@ -1,11 +1,15 @@
 package training.afpa.cda24060.modele;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import training.afpa.cda24060.exception.SaisieException;
+import training.afpa.cda24060.utilitaires.LogUtils;
 import training.afpa.cda24060.utilitaires.RegexValidator;
+
 import java.time.LocalDate;
 
 public class Medicament {
-
+    private static final Logger logger = LoggerFactory.getLogger(Medicament.class);
     private int idMedicament;
     private String nomMedicament;
     private String categorieMedicament;
@@ -17,14 +21,12 @@ public class Medicament {
 
     public Medicament() {}
 
-    // ------------------ Constructeur pour insertion via DAO ------------------
     public Medicament(String nomMedicament,
                       String categorieMedicament,
                       double prixMedicament,
                       LocalDate dateMiseEnCirculation,
                       int quantiteMedicament,
                       boolean sansOrdonnanceMedicament) throws SaisieException {
-
         setNomMedicament(nomMedicament);
         setCategorieMedicament(categorieMedicament);
         setPrixMedicament(prixMedicament);
@@ -34,7 +36,6 @@ public class Medicament {
         this.formeMedicament = "Non précisée"; // valeur par défaut
     }
 
-    // ------------------ Constructeur complet ------------------
     public Medicament(int idMedicament,
                       String nomMedicament,
                       String categorieMedicament,
@@ -43,7 +44,6 @@ public class Medicament {
                       int quantiteMedicament,
                       boolean sansOrdonnanceMedicament,
                       String formeMedicament) throws SaisieException {
-
         this.idMedicament = idMedicament;
         setNomMedicament(nomMedicament);
         setCategorieMedicament(categorieMedicament);
@@ -53,8 +53,6 @@ public class Medicament {
         setSansOrdonnanceMedicament(sansOrdonnanceMedicament);
         setFormeMedicament(formeMedicament);
     }
-
-    // ------------------ GETTERS / SETTERS ------------------
 
     public int getIdMedicament() {
         return idMedicament;
@@ -69,8 +67,11 @@ public class Medicament {
     }
 
     public void setNomMedicament(String nomMedicament) throws SaisieException {
-        if (!RegexValidator.validerNomMedicament(nomMedicament))
-            throw new SaisieException("Nom du médicament invalide : " + nomMedicament);
+        if (!RegexValidator.validerNomMedicament(nomMedicament)) {
+            String message = "Nom du médicament invalide : " + nomMedicament;
+            LogUtils.warn(logger, message);
+            throw new SaisieException(message);
+        }
         this.nomMedicament = nomMedicament;
     }
 
@@ -79,8 +80,11 @@ public class Medicament {
     }
 
     public void setCategorieMedicament(String categorieMedicament) throws SaisieException {
-        if (!RegexValidator.validerCategorieMedicament(categorieMedicament))
-            throw new SaisieException("Catégorie invalide : " + categorieMedicament);
+        if (!RegexValidator.validerCategorieMedicament(categorieMedicament)) {
+            String message = "Catégorie invalide : " + categorieMedicament;
+            LogUtils.warn(logger, message);
+            throw new SaisieException(message);
+        }
         this.categorieMedicament = categorieMedicament;
     }
 
@@ -89,8 +93,11 @@ public class Medicament {
     }
 
     public void setPrixMedicament(double prixMedicament) throws SaisieException {
-        if (!RegexValidator.validerPrix(prixMedicament))
-            throw new SaisieException("Prix invalide : " + prixMedicament);
+        if (!RegexValidator.validerPrix(prixMedicament)) {
+            String message = "Prix invalide : " + prixMedicament;
+            LogUtils.warn(logger, message);
+            throw new SaisieException(message);
+        }
         this.prixMedicament = prixMedicament;
     }
 
@@ -99,8 +106,11 @@ public class Medicament {
     }
 
     public void setDateMiseEnCirculation(LocalDate dateMiseEnCirculation) throws SaisieException {
-        if (dateMiseEnCirculation == null)
-            throw new SaisieException("Date obligatoire.");
+        if (dateMiseEnCirculation == null) {
+            String message = "Date de mise en circulation obligatoire.";
+            LogUtils.warn(logger, message);
+            throw new SaisieException(message);
+        }
         this.dateMiseEnCirculation = dateMiseEnCirculation;
     }
 
@@ -109,8 +119,11 @@ public class Medicament {
     }
 
     public void setQuantiteMedicament(int quantiteMedicament) throws SaisieException {
-        if (quantiteMedicament <= 0)
-            throw new SaisieException("Le stock doit être supérieur à 0 : " + quantiteMedicament);
+        if (quantiteMedicament < 0) {
+            String message = "Le stock doit être supérieur à 0 : " + quantiteMedicament;
+            LogUtils.warn(logger, message);
+            throw new SaisieException(message);
+        }
         this.quantiteMedicament = quantiteMedicament;
     }
 
@@ -127,21 +140,24 @@ public class Medicament {
     }
 
     public void setFormeMedicament(String formeMedicament) throws SaisieException {
-        if (formeMedicament == null || formeMedicament.isBlank())
-            throw new SaisieException("La forme du médicament est obligatoire.");
+        if (formeMedicament == null || formeMedicament.isBlank()) {
+            String message = "La forme du médicament est obligatoire.";
+            LogUtils.warn(logger, message);
+            throw new SaisieException(message);
+        }
         this.formeMedicament = formeMedicament;
     }
 
     @Override
     public String toString() {
         return "\nMédicament"
-                + "\nID                     : " + idMedicament
-                + "\nNom                    : " + nomMedicament
-                + "\nCatégorie              : " + categorieMedicament
-                + "\nPrix                   : " + prixMedicament
-                + "\nDate mise en circulation : " + dateMiseEnCirculation
-                + "\nStock                  : " + quantiteMedicament
-                + "\nForme                  : " + formeMedicament
-                + "\nSans ordonnance        : " + (sansOrdonnanceMedicament ? "Oui" : "Non");
+                + "\nID                         : " + idMedicament
+                + "\nNom                        : " + (nomMedicament != null ? nomMedicament : "Non défini")
+                + "\nCatégorie                  : " + (categorieMedicament != null ? categorieMedicament : "Non définie")
+                + "\nPrix                       : " + prixMedicament
+                + "\nDate mise en circulation   : " + (dateMiseEnCirculation != null ? dateMiseEnCirculation : "Non définie")
+                + "\nStock                      : " + quantiteMedicament
+                + "\nForme                      : " + (formeMedicament != null ? formeMedicament : "Non définie")
+                + "\nSans ordonnance            : " + (sansOrdonnanceMedicament ? "Oui" : "Non");
     }
 }

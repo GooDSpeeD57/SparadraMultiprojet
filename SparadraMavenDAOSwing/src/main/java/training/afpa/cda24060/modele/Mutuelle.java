@@ -1,10 +1,13 @@
 package training.afpa.cda24060.modele;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import training.afpa.cda24060.exception.SaisieException;
+import training.afpa.cda24060.utilitaires.LogUtils;
 import training.afpa.cda24060.utilitaires.RegexValidator;
 
 public class Mutuelle {
-
+    private static final Logger logger = LoggerFactory.getLogger(Mutuelle.class);
     private int id_Mutuelle;
     private String nomMutuelle;
     private String adresseMutuelle;
@@ -22,7 +25,6 @@ public class Mutuelle {
                     String telephoneMutuelle, String mailMutuelle,
                     String departementMutuelle, double tRemboursement)
             throws SaisieException {
-
         this.id_Mutuelle = id_Mutuelle;
         setNomMutuelle(nomMutuelle);
         setAdresseMutuelle(adresseMutuelle);
@@ -48,7 +50,9 @@ public class Mutuelle {
 
     public void setNomMutuelle(String nomMutuelle) throws SaisieException {
         if (!RegexValidator.validerMots(nomMutuelle)) {
-            throw new SaisieException("Nom Mutuelle invalide : " + nomMutuelle);
+            String message = "Nom Mutuelle invalide : " + nomMutuelle;
+            LogUtils.warn(logger, message);
+            throw new SaisieException(message);
         }
         this.nomMutuelle = nomMutuelle;
     }
@@ -59,7 +63,9 @@ public class Mutuelle {
 
     public void setAdresseMutuelle(String adresseMutuelle) throws SaisieException {
         if (!RegexValidator.validerAdresse(adresseMutuelle)) {
-            throw new SaisieException("Adresse Mutuelle invalide : " + adresseMutuelle);
+            String message = "Adresse Mutuelle invalide : " + adresseMutuelle;
+            LogUtils.warn(logger, message);
+            throw new SaisieException(message);
         }
         this.adresseMutuelle = adresseMutuelle;
     }
@@ -70,7 +76,9 @@ public class Mutuelle {
 
     public void setCodePostalMutuelle(String codePostalMutuelle) throws SaisieException {
         if (!RegexValidator.validerCodePostal(codePostalMutuelle)) {
-            throw new SaisieException("Code postal Mutuelle invalide : " + codePostalMutuelle);
+            String message = "Code postal Mutuelle invalide : " + codePostalMutuelle;
+            LogUtils.warn(logger, message);
+            throw new SaisieException(message);
         }
         this.codePostalMutuelle = codePostalMutuelle;
     }
@@ -81,7 +89,9 @@ public class Mutuelle {
 
     public void setVilleMutuelle(String villeMutuelle) throws SaisieException {
         if (!RegexValidator.validerVille(villeMutuelle)) {
-            throw new SaisieException("Ville Mutuelle invalide : " + villeMutuelle);
+            String message = "Ville Mutuelle invalide : " + villeMutuelle;
+            LogUtils.warn(logger, message);
+            throw new SaisieException(message);
         }
         this.villeMutuelle = villeMutuelle;
     }
@@ -92,7 +102,9 @@ public class Mutuelle {
 
     public void setTelephoneMutuelle(String telephoneMutuelle) throws SaisieException {
         if (!RegexValidator.validerTelephone(telephoneMutuelle)) {
-            throw new SaisieException("Téléphone Mutuelle invalide : " + telephoneMutuelle);
+            String message = "Téléphone Mutuelle invalide : " + telephoneMutuelle;
+            LogUtils.warn(logger, message);
+            throw new SaisieException(message);
         }
         this.telephoneMutuelle = telephoneMutuelle;
     }
@@ -103,7 +115,9 @@ public class Mutuelle {
 
     public void setMailMutuelle(String mailMutuelle) throws SaisieException {
         if (!RegexValidator.validerEmail(mailMutuelle)) {
-            throw new SaisieException("Email Mutuelle invalide : " + mailMutuelle);
+            String message = "Email Mutuelle invalide : " + mailMutuelle;
+            LogUtils.warn(logger, message);
+            throw new SaisieException(message);
         }
         this.mailMutuelle = mailMutuelle;
     }
@@ -114,7 +128,9 @@ public class Mutuelle {
 
     public void setDepartementMutuelle(String departementMutuelle) throws SaisieException {
         if (!RegexValidator.validerVille(departementMutuelle)) {
-            throw new SaisieException("Département Mutuelle invalide : " + departementMutuelle);
+            String message = "Département Mutuelle invalide : " + departementMutuelle;
+            LogUtils.warn(logger, message);
+            throw new SaisieException(message);
         }
         this.departementMutuelle = departementMutuelle;
     }
@@ -125,23 +141,25 @@ public class Mutuelle {
 
     public void setTRemboursement(double tRemboursement) throws SaisieException {
         if (!RegexValidator.validerTauxRemboursement(tRemboursement)) {
-            throw new SaisieException("Taux de remboursement invalide : " + tRemboursement);
+            String message = "Taux de remboursement invalide : " + tRemboursement;
+            LogUtils.warn(logger, message);
+            throw new SaisieException(message);
         }
         this.tRemboursement = tRemboursement;
     }
 
     @Override
     public String toString() {
-        return "Mutuelle { " +
-                "id=" + id_Mutuelle +
-                ", nom='" + nomMutuelle + '\'' +
-                ", adresse='" + adresseMutuelle + '\'' +
-                ", codePostal='" + codePostalMutuelle + '\'' +
-                ", ville='" + villeMutuelle + '\'' +
-                ", telephone='" + telephoneMutuelle + '\'' +
-                ", email='" + mailMutuelle + '\'' +
-                ", departement='" + departementMutuelle + '\'' +
-                ", tauxRemboursement=" + tRemboursement +
-                '}';
+        return "\nMutuelle"
+                +"\nid                      : " + id_Mutuelle
+                +"\nNom                     : " + nomMutuelle
+                +"\nAdresse                 : " + adresseMutuelle
+                +"\nCodePostal              : " + codePostalMutuelle
+                +"\nVille                   : " + villeMutuelle
+                +"\nTelephone               : " + telephoneMutuelle
+                +"\nEmail                   : " + mailMutuelle
+                +"\nDépartement             : " + departementMutuelle
+                +"\nTaux de Remboursement   : " + tRemboursement ;
+
     }
 }

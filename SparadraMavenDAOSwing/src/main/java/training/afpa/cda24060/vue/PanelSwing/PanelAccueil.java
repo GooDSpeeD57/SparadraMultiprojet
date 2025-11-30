@@ -3,9 +3,17 @@ package training.afpa.cda24060.vue.PanelSwing;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.net.URL;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import training.afpa.cda24060.ClasseDAO.*;
+import training.afpa.cda24060.utilitaires.LogUtils;
 
 public class PanelAccueil extends JPanel {
+
+    private static final Logger logger = LoggerFactory.getLogger(PanelAccueil.class);
 
     public PanelAccueil() {
         initComponents();
@@ -14,20 +22,45 @@ public class PanelAccueil extends JPanel {
     private void initComponents() {
         setLayout(new BorderLayout());
 
-        // --- Image de fond ---
-        ImageIcon backgroundIcon = new ImageIcon(getClass().getResource("/test.png"));
-        Image backgroundImage = backgroundIcon.getImage();
+        Image backgroundImage = loadBackgroundImage();
+        if (backgroundImage == null) {
+            return;
+        }
 
-        JPanel panelBackground = new JPanel(new BorderLayout()) {
+        JPanel backgroundPanel = createBackgroundPanel(backgroundImage);
+        JPanel panelBienvenue = createWelcomePanel();
+        JPanel panelStats = createStatsPanel();
+
+        backgroundPanel.add(panelBienvenue, BorderLayout.CENTER);
+        backgroundPanel.add(panelStats, BorderLayout.SOUTH);
+
+        add(backgroundPanel, BorderLayout.CENTER);
+    }
+
+    private Image loadBackgroundImage() {
+        URL imageUrl = getClass().getResource("/test.png");
+        if (imageUrl == null) {
+            LogUtils.error(logger, "Image introuvable : {}", "/test.png");
+            return null;
+        }
+        return new ImageIcon(imageUrl).getImage();
+    }
+
+    private JPanel createBackgroundPanel(Image backgroundImage) {
+
+        JPanel panel = new JPanel(new BorderLayout()) {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
             }
         };
-        panelBackground.setOpaque(false);
+        panel.setOpaque(false);
+        return panel;
+    }
 
-        // --- Panel d'accueil ---
+    private JPanel createWelcomePanel() {
+
         JPanel panelBienvenue = new JPanel();
         panelBienvenue.setOpaque(false);
         panelBienvenue.setLayout(new BoxLayout(panelBienvenue, BoxLayout.Y_AXIS));
@@ -48,18 +81,20 @@ public class PanelAccueil extends JPanel {
         panelBienvenue.add(lblSousTitre);
         panelBienvenue.add(Box.createVerticalGlue());
 
-        // --- Panel des statistiques ---
+        return panelBienvenue;
+    }
+
+    private JPanel createStatsPanel() {
+
         JPanel panelStats = new JPanel(new GridLayout(2, 2, 10, 10));
         panelStats.setOpaque(false);
         panelStats.setBorder(new TitledBorder("Statistiques"));
 
-        // --- Création des DAO ---
         ClientDAO clientDao = new ClientDAO();
         MedicamentDAO medicamentDao = new MedicamentDAO();
         MedecinDAO medecinDao = new MedecinDAO();
         MutuelleDAO mutuelleDao = new MutuelleDAO();
 
-        // --- Création des labels avec comptage depuis la base ---
         JLabel lblNbClient = new JLabel("Clients : " + clientDao.countClient(), SwingConstants.CENTER);
         JLabel lblNbMedicament = new JLabel("Médicaments : " + medicamentDao.countMedicaments(), SwingConstants.CENTER);
         JLabel lblNbMedecin = new JLabel("Médecins : " + medecinDao.countMedecins(), SwingConstants.CENTER);
@@ -81,14 +116,9 @@ public class PanelAccueil extends JPanel {
         panelStats.add(lblNbMedecin);
         panelStats.add(lblNbMutuelle);
 
-        // --- Assemblage final ---
-        panelBackground.add(panelBienvenue, BorderLayout.CENTER);
-        panelBackground.add(panelStats, BorderLayout.SOUTH);
-
-        add(panelBackground);
+        return panelStats;
     }
 
-    // --- Méthode pour actualiser les statistiques ---
     public void actualiserStatistiques() {
         removeAll();
         initComponents();

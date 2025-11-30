@@ -243,7 +243,7 @@ public class PanelOrdonnance extends JPanel {
                                  Client[] clientSelectionne, Medecin[] medecinSelectionne) {
 
         try {
-            // Client sélectionné
+            // --- Client sélectionné ---
             int ligneClient = tableClients.getSelectedRow();
             if (ligneClient == -1) {
                 JOptionPane.showMessageDialog(dialog, "Veuillez sélectionner un client!", "Erreur", JOptionPane.WARNING_MESSAGE);
@@ -252,16 +252,16 @@ public class PanelOrdonnance extends JPanel {
             String nssSelectionne = (String) modelClients.getValueAt(ligneClient, 2);
             clientSelectionne[0] = clientDAO.findByNSS(nssSelectionne);
 
-            // Médecin sélectionné
+            // --- Médecin sélectionné ---
             int ligneMedecin = tableMedecins.getSelectedRow();
             if (ligneMedecin == -1) {
                 JOptionPane.showMessageDialog(dialog, "Veuillez sélectionner un médecin!", "Erreur", JOptionPane.WARNING_MESSAGE);
                 return;
             }
             String rppsSelectionne = (String) modelMedecins.getValueAt(ligneMedecin, 2);
-            medecinSelectionne[0] = medecinDAO.findOneByRPPS(rppsSelectionne);
+            medecinSelectionne[0] = medecinDAO.findByRPPS(rppsSelectionne);
 
-            // Médicaments sélectionnés
+            // --- Médicaments sélectionnés ---
             int[] lignesMedicaments = tableMedicaments.getSelectedRows();
             if (lignesMedicaments.length == 0) {
                 JOptionPane.showMessageDialog(dialog, "Veuillez sélectionner au moins un médicament!", "Erreur", JOptionPane.WARNING_MESSAGE);
@@ -277,10 +277,19 @@ public class PanelOrdonnance extends JPanel {
                 int quantitePrescrite = demanderQuantite(dialog, medicamentChoisi);
                 if (quantitePrescrite == -1) return;
 
+                // --- Retirer du stock ---
+                int nouveauStock = medicamentDAO.retirerDuStock(medicamentChoisi.getIdMedicament(), quantitePrescrite);
+                if (nouveauStock == -1) {
+                    JOptionPane.showMessageDialog(dialog,
+                            "Impossible de retirer le stock pour \"" + medicamentChoisi.getNomMedicament() + "\".\nStock insuffisant.",
+                            "Erreur", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
                 prescriptions.add(new Prescription(medicamentChoisi, quantitePrescrite));
             }
 
-
+            // --- Création de l'ordonnance ---
             LocalDate dateOrdonnance = LocalDate.now();
             Ordonnance ordonnance = new Ordonnance(medecinSelectionne[0], clientSelectionne[0], prescriptions, dateOrdonnance);
 
@@ -292,6 +301,7 @@ public class PanelOrdonnance extends JPanel {
             chargerOrdonnances();
             dialog.dispose();
 
+            // --- Affichage résumé ---
             StringBuilder medicamentList = new StringBuilder();
             for (Prescription p : prescriptions) {
                 medicamentList.append("• ").append(p.getNomMedicament())
@@ -322,7 +332,7 @@ public class PanelOrdonnance extends JPanel {
 
             try {
                 int quantite = Integer.parseInt(input);
-                if (quantite <= 0) {
+                if (quantite <=0) {
                     JOptionPane.showMessageDialog(parent, "La quantité doit être supérieure à 0.", "Erreur", JOptionPane.ERROR_MESSAGE);
                 } else if (quantite > medicament.getQuantiteMedicament()) {
                     JOptionPane.showMessageDialog(parent, "Quantité supérieure au stock disponible.", "Erreur", JOptionPane.ERROR_MESSAGE);
